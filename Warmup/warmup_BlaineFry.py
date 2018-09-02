@@ -225,5 +225,5 @@ plt.legend()
 # yep, works for that one too! (figure 12)
 
 # so I've demonstrated emperically that the populations of A an B reach
-# an equillibrium value of (1/2)*(A + B), and that it doens't matter
+# an equillibrium value of (1/2)*(A + B), and that it doesn't matter
 # which started higher.
