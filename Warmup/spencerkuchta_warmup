@@ -1,0 +1,117 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+#Radio Active Decay
+
+N0 = 100 #initial isotopes
+tau = 703.8 #half-life
+
+t0 = 0.0 #initial time
+tF = 10 * tau #final time
+Nsteps = 10000
+
+t = np.linspace(t0, tF, Nsteps+1) #plot time
+N = np.zeros(Nsteps+1)
+N[0] = N0
+dt = (tF-t0)/Nsteps #time derivative
+
+for i in range(1, Nsteps+1):
+    dN = - N[i-1]/tau #decay
+    N[i] = N[i-1] +dN*dt
+    
+plt.plot(t, N, 'go')
+plt.plot(t, N0*np.exp(-t/tau), 'y-')
+plt.xlabel("time in millions of years")
+plt.ylabel("number of atoms")
+#Plot decays at expected rate
+
+#Population Growth
+
+N0 = 100.0 #initial population
+alpha = 0.5 #growth
+beta = 0.001 #decay
+
+t0 = 0.0 #initial time
+tF = 10.0 #final time
+Nsteps = 1000
+
+t = np.linspace(t0, tF, Nsteps+1) #plot time 
+N = np.zeros(Nsteps+1)
+N[0] = alpha*N0 - beta*(N0**2)
+dt = (tF-t0)/Nsteps #time derivative
+
+for i in range(1, Nsteps+1):
+    dN = alpha*N[i-1] - beta*(N[i-1]**2) 
+    N[i] = N[i-1] + dN*dt
+    
+plt.plot(t, N, 'go')
+plt.xlabel("time in years")
+plt.ylabel("population")
+#Unable to solve analytically, plot is extremely sensitive to the beta-value
+
+#Coupled Radioactive Decay 1
+
+NA0 = 10 #initial A isotopes
+NB0 = 200 #initial B isotopes
+tauA = 500 #half-life for A
+tauB = 1000 #half-life for B
+
+tA0 = 0.0 #initial time A
+tB0 = 0.0 #initial time B
+tAF = 10000.0 #final time A
+tBF = 10000.0 #final time B
+Nsteps = 100 
+
+tA = np.linspace(tA0,tAF,Nsteps+1) #plot time A
+tB = np.linspace(tB0,tBF,Nsteps+1) #plot time B
+NA = NB = np.zeros(Nsteps+1) 
+NA[0] = NA0 
+NB[0] = NB0
+dtA = (tAF-tA0)/Nsteps #time derivative for A
+dtB = (tBF-tB0)/Nsteps #time derivative for B
+
+for i in range(1,Nsteps+1): 
+    dNA = - (NA[i-1]/tauA) #A decay
+    NA[i] = NA[i-1] + (dNA*dtA)
+    dNB = (NA[i-1]/tauA) - (NB[i-1]/tauB) #B decay
+    NB[i] = ((NA[i]) - NB[i-1]) + dNB*dtB
+
+plt.plot(tA,NA,'go') 
+plt.plot(tB,NB,'b-') 
+plt.xlabel ("time in years")
+plt.ylabel ("number of isotopes")
+#Decay process ends very quickly, dips into negative
+
+#Coupled Radioactive Decay 2
+
+NA0 = 10 #initial A isotopes
+NB0 = 200 #initial B isotopes
+tauA = 500 #half-life for A
+tauB = 1000 #half-life for B
+
+tA0 = 0.0 #initial time A
+tB0 = 0.0 #initial time B
+tAF = 10000.0 #final time A
+tBF = 10000.0 #final time B
+Nsteps = 100 
+
+tA = np.linspace(tA0,tAF,Nsteps+1) #plot time A
+tB = np.linspace(tB0,tBF,Nsteps+1) #plot time B
+NA = NB = np.zeros(Nsteps+1) 
+NA[0] = NA0 
+NB[0] = NB0
+dtA = (tAF-tA0)/Nsteps #time derivative for A
+dtB = (tBF-tB0)/Nsteps #time derivative for B
+
+for i in range(1,Nsteps+1): 
+    dNA = (NB[i-1]/tauB) - (NA[i-1]/tauA) #A decay
+    NA[i] = NB[i] - NA[i-1] + (dNA*dtA)
+    dNB = (NA[i-1]/tauA) - (NB[i-1]/tauB) #B decay
+    NB[i] = ((NA[i]) - NB[i-1]) + dNB*dtB
+
+plt.plot(tA,NA,'go') 
+plt.plot(tB,NB,'b-') 
+plt.xlabel ("time in years")
+plt.ylabel ("number of isotopes")
+#Somehow I get negative values of isotopes before increasing substantially
+#Both coupling decay problems followed format of first problem
