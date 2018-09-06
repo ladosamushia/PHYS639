@@ -29,9 +29,12 @@ while y >= 0:
 	ys1.append(y)
 	dts1.append(dts1[-1] + dt)
 	
-print(x, "m")
+print(x, "m", dts1[-1], "s")
 
-plt.plot(xs1, ys1, 'r')
+plt.plot(xs1, ys1, 'r', label="kinematic")
+plt.ylabel("height (m)")
+plt.xlabel("distance (m)")
+leg = plt.legend(ncol=1)
 plt.show()
 
 #2
@@ -68,10 +71,13 @@ while y >= 0:
 	ys2.append(y)
 	dts2.append(dts2[-1] + dt)
 
-print(x, "m")
+print(x, "m", dts2[-1], "s")
 
-plt.plot(xs1, ys1, 'r')
-plt.plot(xs2, ys2, 'g')
+plt.plot(xs1, ys1, 'r', label="kinematic")
+plt.plot(xs2, ys2, 'g', label="drag")
+plt.ylabel("height (m)")
+plt.xlabel("distance (m)")
+leg = plt.legend(ncol=1)
 plt.show()
 
 #3
@@ -93,7 +99,7 @@ ys3 = [0]
 dts3 = [0]
 
 def drag(v, y):
-	return -(1 - 2.2 * 10**(-5) * y)**(5/2)
+	return (1 - 2.2 * 10**(-5) * y)**(5/2) * -0.00004 * v * v / m
 
 while y >= 0:
 	x = x + vx * dt + 0.5 * drag(vx, y) * dt * dt
@@ -106,11 +112,14 @@ while y >= 0:
 	ys3.append(y)
 	dts3.append(dts3[-1] + dt)
 
-print(x, "m")
+print(x, "m", dts3[-1], "s")
 
-plt.plot(xs1, ys1, 'r')
-plt.plot(xs2, ys2, 'g')
-plt.plot(xs3, ys3, 'b')
+plt.plot(xs1, ys1, 'r', label="kinematic")
+plt.plot(xs2, ys2, 'g', label="drag")
+plt.plot(xs3, ys3, 'b', label="air density")
+plt.ylabel("height (m)")
+plt.xlabel("distance (m)")
+leg = plt.legend(ncol=1)
 plt.show()
 
 #4
@@ -135,7 +144,7 @@ G = 6.67 * 10**-11
 R = 6371 * 10**3
 
 def drag(v, y):
-	return -(1 - 2.2 * 10**(-5) * y)**(5/2)
+	return (1 - 2.2 * 10**(-5) * y)**(5/2) * -0.00004 * v * v / m
 
 def gravity(y):
 	return -G * M / (R + y)**2
@@ -151,10 +160,13 @@ while y >= 0:
 	ys4.append(y)
 	dts4.append(dts4[-1] + dt)
 	
-print(x, "m")
+print(x, "m", "in", dts4[-1], "s")
 
-plt.plot(xs1, ys1, 'r')
-plt.plot(xs2, ys2, 'g')
-plt.plot(xs3, ys3, 'b')
-plt.plot(xs4, ys4, 'r--')
+plt.plot(xs1, ys1, 'r', label="kinematic")
+plt.plot(xs2, ys2, 'g', label="drag")
+plt.plot(xs3, ys3, 'b', label="air density")
+plt.plot(xs4, ys4, 'm', label="gravity")
+plt.ylabel("height (m)")
+plt.xlabel("distance (m)")
+leg = plt.legend(ncol=1)
 plt.show()
