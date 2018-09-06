@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 g = 9.81 # acceleratio in y
 x_0 = int(input("Initial x position will be in m :")) # Initial "x" Position
 y_0 =  int(input("Intial height will be in m :")) # Initial "y" Position
-v_0 =  4000 #int(input("Enter Velocity will be in m/s :")) # Initial velocity
+v_0 =  int(input("Enter Velocity will be in m/s :")) # Initial velocity
 t_0 = 0.0 # Initial time
 t_f = 10000 # Final time
 stepsize = 1000000 # fraction of dt 
