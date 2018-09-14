@@ -1,15 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
-#%matplotlib inline #only in jupiter
+%matplotlib inline
 
 #Problem 1 is commented out
 
 #initalial Condidtions
-N0 = 10
+N0 = 100
 #tau = 703.8
 tau = 1
-alpha = 2
-beta = 2
+alpha = 10
+beta = .2
 tini = 0
 tfin = 10*tau
 Nsteps = 10000
@@ -27,8 +27,51 @@ for i in range(1,Nsteps):
     N[i] = N[i-1] + dN*dt
 
     #Display on Graph
-    #was not  able to check plot due to jupyter not responding
+   
+plt.figure()
 plt.plot(t,N,'go')
 #plt.plot(t,N0*np.exp(-t/tau),"yz")
-plt.xlabel('time')
-plt.ylabel('Number of atoms')
+plt.xlabel('Time')
+plt.ylabel('Number of Entries')
+#*****************************************
+#initial Conditions
+
+tfin = 100
+tini = 0
+Nsteps = 10000
+
+#Inital for radioactive decay 1
+#tauA = 10
+#tauB = 20
+#Nao = 100
+#Nbo = 200
+#Inital for radioactive decay 2
+tauA = 20
+tauB = 50
+Nao = 100
+Nbo = 50
+
+t = np.linspace(tini, tfin, Nsteps + 1)
+Na = np.zeros(Nsteps + 1)
+Nb = np.zeros(Nsteps + 1)
+Na[0] = Nao
+Nb[0] = Nbo
+dt = (tfin - tini) / Nsteps
+
+for i in range(1,Nsteps+1):
+    #for radioactive decay 1
+    #dNa = -Na[i-1]/tauA
+    
+    #for radioactive decay 2
+    dNa = Nb[i-1]/tauB-Na[i-1]/tauA
+    
+    dNb = Na[i-1]/tauA-Nb[i-1]/tauB
+    Na[i] = Na[i-1]+dNa*dt
+    Nb[i] = Nb[i-1]+dNb*dt
+
+plt.figure()
+plt.plot(t,Na,'r-')
+plt.plot(t,Nb,'b-')
+plt.title('Radioactive Decay')
+plt.xlabel('Time')
+plt.ylabel('Number of Entries')
