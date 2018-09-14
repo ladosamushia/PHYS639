@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 #Problem 1 is commented out
 
+#1) Uranium-235 decay
+#2) Population Growth
 #initalial Condidtions
 N0 = 100
 #tau = 703.8
@@ -33,6 +35,11 @@ plt.plot(t,N,'go')
 #plt.plot(t,N0*np.exp(-t/tau),"yz")
 plt.xlabel('Time')
 plt.ylabel('Number of Entries')
+
+#In Problem 1, the graph represents the the half-life decay of Uranium-235
+#In Problem 2, alpha and beta represent the birth and death rates of a population
+#as aplph(birth rate) increases, the value that the decay approaches raises
+#as beta(death rate)increases, the time that the decay takes decreases
 #*****************************************
 #initial Conditions
 
@@ -75,3 +82,5 @@ plt.plot(t,Nb,'b-')
 plt.title('Radioactive Decay')
 plt.xlabel('Time')
 plt.ylabel('Number of Entries')
+
+#In the 
