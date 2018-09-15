@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Warmup
+
+Spencer Kuchta
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -32,7 +38,7 @@ alpha = 0.5 #growth
 beta = 0.001 #decay
 
 t0 = 0.0 #initial time
-tF = 10.0 #final time
+tF = 25.0 #final time
 Nsteps = 1000
 
 t = np.linspace(t0, tF, Nsteps+1) #plot time 
@@ -51,8 +57,8 @@ plt.ylabel("population")
 
 #Coupled Radioactive Decay 1
 
-NA0 = 10 #initial A isotopes
-NB0 = 200 #initial B isotopes
+NA0 = 20 #initial A isotopes
+NB0 = 10 #initial B isotopes
 tauA = 500 #half-life for A
 tauB = 1000 #half-life for B
 
@@ -60,23 +66,24 @@ tA0 = 0.0 #initial time A
 tB0 = 0.0 #initial time B
 tAF = 10000.0 #final time A
 tBF = 10000.0 #final time B
-Nsteps = 100 
+Nsteps = 2500
 
 tA = np.linspace(tA0,tAF,Nsteps+1) #plot time A
 tB = np.linspace(tB0,tBF,Nsteps+1) #plot time B
-NA = NB = np.zeros(Nsteps+1) 
+NA = np.zeros(Nsteps+1)
+NB = np.zeros(Nsteps+1) 
 NA[0] = NA0 
 NB[0] = NB0
-dtA = (tAF-tA0)/Nsteps #time derivative for A
-dtB = (tBF-tB0)/Nsteps #time derivative for B
+dtA = tAF/Nsteps #time derivative for A
+dtB = tBF/Nsteps #time derivative for B
 
 for i in range(1,Nsteps+1): 
     dNA = - (NA[i-1]/tauA) #A decay
     NA[i] = NA[i-1] + (dNA*dtA)
     dNB = (NA[i-1]/tauA) - (NB[i-1]/tauB) #B decay
-    NB[i] = ((NA[i]) - NB[i-1]) + dNB*dtB
+    NB[i] = NB[i-1] + dNB*dtB
 
-plt.plot(tA,NA,'go') 
+plt.plot(tA,NA,'r-') 
 plt.plot(tB,NB,'b-') 
 plt.xlabel ("time in years")
 plt.ylabel ("number of isotopes")
@@ -84,20 +91,21 @@ plt.ylabel ("number of isotopes")
 
 #Coupled Radioactive Decay 2
 
-NA0 = 10 #initial A isotopes
-NB0 = 200 #initial B isotopes
-tauA = 500 #half-life for A
-tauB = 1000 #half-life for B
+NA0 = 200 #initial A isotopes
+NB0 = 100 #initial B isotopes
+tauA = 10 #half-life for A
+tauB = 50 #half-life for B
 
 tA0 = 0.0 #initial time A
 tB0 = 0.0 #initial time B
-tAF = 10000.0 #final time A
-tBF = 10000.0 #final time B
-Nsteps = 100 
+tAF = 100.0 #final time A
+tBF = 100.0 #final time B
+Nsteps = 10000 
 
 tA = np.linspace(tA0,tAF,Nsteps+1) #plot time A
 tB = np.linspace(tB0,tBF,Nsteps+1) #plot time B
-NA = NB = np.zeros(Nsteps+1) 
+NA = np.zeros(Nsteps+1)
+NB = np.zeros(Nsteps+1) 
 NA[0] = NA0 
 NB[0] = NB0
 dtA = (tAF-tA0)/Nsteps #time derivative for A
@@ -105,13 +113,13 @@ dtB = (tBF-tB0)/Nsteps #time derivative for B
 
 for i in range(1,Nsteps+1): 
     dNA = (NB[i-1]/tauB) - (NA[i-1]/tauA) #A decay
-    NA[i] = NB[i] - NA[i-1] + (dNA*dtA)
+    NA[i] = NA[i-1] + (dNA*dtA)
     dNB = (NA[i-1]/tauA) - (NB[i-1]/tauB) #B decay
-    NB[i] = ((NA[i]) - NB[i-1]) + dNB*dtB
-
-plt.plot(tA,NA,'go') 
+    NB[i] = (NB[i-1]) + dNB*dtB
+    
+plt.figure()
+plt.plot(tA,NA,'r-') 
 plt.plot(tB,NB,'b-') 
 plt.xlabel ("time in years")
 plt.ylabel ("number of isotopes")
 #Somehow I get negative values of isotopes before increasing substantially
-#Both coupling decay problems followed format of first problem
