@@ -1,0 +1,69 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+#function that returns trajectory of a projectile
+#given initial velocity and angle 
+#includes factors of drag, drag and gravity affected by height
+def projectile(v, theta, drag, dragVar, gravVar):
+    #physical constants
+    Rearth = 6371000 #m
+    #initial conditions
+    t = 0 #s
+    x = 0 #m
+    y = 0 #m
+    #accelerations in x y
+    ax = 0
+    ay = 9.8 
+    adx = 0
+    ady = 0
+    theta = np.deg2rad(theta) #degrees converted to radians
+    vx = v*np.cos(theta) #m/s
+    vy = v*np.sin(theta) #m/s
+    #time step in seconds
+    dt = 0.01
+    #let's savey all x and y values in an array
+    x_array = np.array([x])
+    y_array = np.array([y])
+    
+    #loop while projectile in the air
+    while y >= 0:
+        #drag        
+        if drag == True:
+            ad = -0.0004*(vx**2 + vy**2)
+            #drag lessens with height
+            if dragVar == True:
+                ad = ad*(1 - 2.2*10**-5*y)**(5/2)
+            costheta = vx/np.sqrt(vx**2 + vy**2)
+            sintheta = vy/np.sqrt(vx**2 + vy**2)
+            adx = ad*costheta
+            ady = ad*sintheta
+            ax = adx
+        if gravVar == False:
+            ay = ady - 9.8
+       #height variable gravity
+        else:
+            ay = ady - 9.8*(Rearth)**2/(Rearth + y)**2
+           
+       #evolve initial conditions
+        x = x + vx*dt
+        y = y + vy*dt
+        vx = vx + ax*dt
+        vy = vy + ay*dt
+        t = t + dt
+        
+        x_array = np.append(x_array,x)
+        y_array = np.append(y_array,y)
+    return [x_array, y_array]
+        
+[x1,y1] = projectile(40,80,False,False,False)
+[x2,y2] = projectile(40,80,False,False,True)
+[x3,y3] = projectile(40,80,True,False,True)
+[x4,y4] = projectile(40,80,True,True,True)
+        
+plt.plot(x1,y1, 'g-', label='kinematic')
+plt.plot(x2,y2, 'r-', label='grav')
+plt.plot(x3,y3, 'b-', label='drag, grav')
+plt.plot(x4,y4, 'y-', label='drag, dragVar, grav')
+plt.legend()
+plt.xlabel('Distance (m)')
+plt.ylabel('Height (m)')
