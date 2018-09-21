@@ -1,0 +1,301 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Sep 13 13:25:46 2018
+
+@author: dylansmac
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+#%% Pendulum motion
+a0 = np.deg2rad(10.0)                                                           #Defining variables
+g = 9.8
+l = 3.0
+v0 = 1.0
+w0 = v0/l
+ti = 0.0
+tf = 50.0
+steps = 10000.0
+dt = (tf-ti)/steps
+w = w0
+
+t = 0.0
+timed = []
+
+def alpha(a, w):                                                                #Define function
+    return (-g/l)*np.sin(a)
+
+s = 0
+sl = []
+period = []
+a = a0
+accelerationl = []
+aa = []
+omega = []
+i = 0
+
+while t < tf:                                                                   #Loop to solve the function
+    acceleration = alpha(a, w)
+    accelerationl.append(acceleration)
+    w += acceleration*dt
+    omega.append(w)
+    a += w*dt
+    aa.append(a)
+    if aa[i - 1] < 0.0 and aa[i] > 0.0:                                         #Find where the function crosses zero with a positive slope
+        period.append(t)
+    timed.append(t)
+    sl.append(s)
+    i = i + 1
+    t = t+dt
+
+
+
+periodtot = period[1] - period[0]                                               #Solve for frequency
+frequency = (2*np.pi)/periodtot
+print frequency
+freqreal = np.sqrt(g/l)
+error = (frequency -freqreal)/frequency
+print "The error is ", abs(error) * 100, "%"
+plt.figure(1)
+plt.plot(timed, aa, "blue", label="No Drag or Force")
+plt.plot(timed,sl)
+
+#%% Pendulum motion with dampening
+
+a0 = np.deg2rad(10.0)                                                           #Define variables
+g = 9.8
+l = 3.0
+v0 = 1.0
+w0 = v0/l
+ti = 0.0
+tf = 50.0
+steps = 10000.0
+dt = (tf-ti)/steps
+w = w0
+q = 0.5
+
+
+
+t = 0.0
+timed = []
+
+def alpha(a, w):                                                                #Define function
+    return (-g/l)*np.sin(a) - q*w
+
+s = 0
+sl = []
+periodd = []
+a = a0
+accelerationld = []
+aad = []
+omega = []
+i = 0
+
+while t < tf:                                                                   #Loop to solve for solutions
+    acceleration = alpha(a, w)
+    accelerationld.append(acceleration)
+    w += acceleration*dt
+    omega.append(w)
+    a += w*dt
+    aad.append(a)
+    if aad[i - 1] < 0.0 and aad[i] > 0.0:                                       #Test for when the function coresses zero with a positive slope
+        periodd.append(t)
+    timed.append(t)
+    sl.append(s)
+    i = i + 1
+    t = t+dt
+
+
+
+periodtot = periodd[1] - periodd[0]                                             #Calculate frequency
+frequency = (2*np.pi)/periodtot
+print frequency
+freqreal = np.sqrt(g/l)
+error = (frequency -freqreal)/frequency
+print "The error is ", abs(error) * 100, "%"
+plt.figure(1)
+plt.plot(timed, aad, "green", label="Drag")
+plt.plot(timed,sl)
+
+#%% Pendulum with out drag and with external force
+a0 = np.deg2rad(10.0)                                                           #Define variables
+g = 9.8
+l = 3.0
+v0 = 1.0
+w0 = v0/l
+ti = 0.0
+tf = 50.0
+steps = 10000.0
+dt = (tf-ti)/steps
+w = w0
+q = 0
+Fmax = 10
+OMEGA=10
+
+
+t = 0.0
+timed = []
+
+def alpha(a, w, t):                                                             #Define the function
+    return (-g/l)*np.sin(a) - q*w + Fmax*np.sin(OMEGA*t)
+
+s = 0
+sl = []
+periodd = []
+a = a0
+accelerationld = []
+aad = []
+omega = []
+i = 0
+
+while t < tf:                                                                   #Loop to find solutions
+    acceleration = alpha(a, w, t)
+    accelerationld.append(acceleration)
+    w += acceleration*dt
+    omega.append(w)
+    a += w*dt
+    aad.append(a)
+    if aad[i - 1] < 0.0 and aad[i] > 0.0:                                       #Test for when the function crosses zero with a positive slope
+        periodd.append(t)
+    timed.append(t)
+    sl.append(s)
+    i = i + 1
+    t = t+dt
+
+
+
+periodtot = periodd[1] - periodd[0]                                             #Calculates frequency
+frequency = (2*np.pi)/periodtot
+print frequency
+freqreal = np.sqrt(g/l)
+error = (frequency -freqreal)/frequency
+print "The error is ", abs(error) * 100, "%"
+plt.figure(1)
+plt.plot(timed, aad, "orange", label = "Force")
+plt.plot(timed,sl)
+#%% Pendulum with drag and external force
+a0 = np.deg2rad(10.0)                                                           #Define variables
+g = 9.8
+l = 3.0
+v0 = 1.0
+w0 = v0/l
+ti = 0.0
+tf = 50.0
+steps = 10000.0
+dt = (tf-ti)/steps
+w = w0
+q = 0.5
+Fmax = 10
+OMEGA=10
+
+
+t = 0.0
+timed = []
+
+def alpha(a, w, t):                                                             #Define function
+    return (-g/l)*np.sin(a) - q*w + Fmax*np.sin(OMEGA*t)
+
+s = 0
+sl = []
+periodd = []
+a = a0
+accelerationld = []
+aad = []
+omega = []
+i = 0
+
+while t < tf:
+    acceleration = alpha(a, w, t)                                               #Loop to find solutions
+    accelerationld.append(acceleration)
+    w += acceleration*dt
+    omega.append(w)
+    a += w*dt
+    aad.append(a)
+    if aad[i - 1] < 0.0 and aad[i] > 0.0:                                       #Test for when the function crosses zero with a positive slope
+        periodd.append(t)
+    timed.append(t)
+    sl.append(s)
+    i = i + 1
+    t = t+dt
+
+
+
+periodtot = periodd[1] - periodd[0]                                             #Calculate frequency
+frequency = (2*np.pi)/periodtot
+print frequency
+freqreal = np.sqrt(g/l)
+error = (frequency -freqreal)/frequency
+print "The error is ", abs(error) * 100, "%"
+plt.figure(1)
+plt.xlabel("Time")
+plt.ylabel("Position")
+plt.title("Position vs Time")
+plt.plot(timed, aad, "red", label = "Drag & Force")
+plt.plot(timed,sl)
+plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
+#%% Frequency (no drag or external force) vs angle
+
+g = 9.8                                                                         #Define variables
+l = 3.0
+v0 = 1.0
+w0 = v0/l
+ti = 0.0
+tf = 50.0
+steps = 10000
+kmax = 90
+dt = (tf-ti)/steps
+
+timed = []
+
+def alpha(a, w):                                                                #Define function
+    return (-g/l)*np.sin(a)
+
+s = 0
+sl = []
+accelerationl = []
+aa = []
+kl = []
+omega = []
+frequencyf = []
+freqreal = np.sqrt(g/l)
+freqreall = []
+i = 0
+k = 1.0
+while k < kmax:                                                                 #While loop for testing different angles
+    a0 = np.deg2rad(k)
+    a = a0
+    w = w0
+    periodf = []
+    t = 0
+    if len(periodf) < 2:                                                        #Finding two points that crosses zero with a positive slope to find the period
+        while len(periodf) <2:
+            acceleration = alpha(a, w)
+            accelerationl.append(acceleration)
+            w += acceleration*dt
+            omega.append(w)
+            a += w*dt
+            aa.append(a)
+            if aa[i - 1] < 0.0 and aa[i] > 0.0:
+                periodf.append(t)
+            timed.append(t)
+            sl.append(s)
+            i = i + 1
+            t = t+dt
+        periodtot = periodf[1] - periodf[0]                                     #Converting period into frequency
+        frequency = (2*np.pi)/periodtot
+        frequencyf.append(frequency)                                            #Appending each frequency for each angle to an array
+    kl.append(k)
+    k = k + 1
+    freqreall.append(freqreal)                                                  #Appending the estimate for small angles to an array (for later graphing)
+        
+
+
+plt.figure(2)       
+plt.xlabel("Angle")
+plt.ylabel("Frequency")
+plt.title("Frequency vs Angle")                                                            #Plotting the graphs
+plt.plot(kl, frequencyf, label = "Calculated")
+plt.plot(kl, freqreall, label = "Estimate for small angles")
+plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
