@@ -132,7 +132,7 @@ m = 1
 L = 1
 
 dt = 1 / 100000
-run_time = 25
+run_time = 50
 n_steps = int(run_time / dt)
 
 # F = m*g*sin(a)
@@ -153,7 +153,7 @@ def diff_omega(omega):
 	q = 0
 
 	def f_ext(t):
-		return f_max * math.sin(omega * t)
+		return -f_max * math.cos(omega * t)
 
 	for i in range(n_steps):
 		a += da * dt
@@ -167,12 +167,83 @@ def diff_omega(omega):
 
 diff_omega(math.sqrt(-g/L))
 
-for j in range(0, 6, 2):
-	diff_omega(j)
+diff_omega(2.715)
+diff_omega(math.e)
+diff_omega(2.72)
+
+# for j in range(0, 6, 2):
+# 	diff_omega(j)
 
 plt.axhline(y=0, color='k')
 plt.xlabel("time")
 plt.ylabel("a (deg)")
 plt.title("a0=" + str(angle) + " deg | f_max=" + str(f_max))
 plt.legend(ncol=2)
+plt.show()
+
+#4 amplitude vs angle
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+pi = math.pi
+g = -9.8
+
+v0 = 0
+angle = 5
+a0 = angle * pi / 180
+m = 1
+L = 1
+
+dt = 1 / 100000
+run_time = 20
+n_steps = int(run_time / dt)
+
+# F = m*g*sin(a)
+# g * sin(a) = a = (d^2)l/(dt^2)
+# (d^2)a/(dt^2) = g/L * sin(a) - q * da/dt + F_ext
+# da/dt * L = dl/dt
+
+f_max = 1
+
+q = 0
+
+def diff_omega(omega):
+	a = a0
+	max_a = a
+	dda = g/L * math.sin(a)
+	da = dda * dt + v0 / L
+
+	def f_ext(t):
+		return f_max * math.sin(omega * t)
+
+	for i in range(n_steps):
+		a += da * dt
+		if abs(a) > max_a:
+			max_a = abs(a)
+		da += dda * dt
+		dda = g/L * math.sin(a) - q * da + f_ext(dt * i)
+	
+	return max_a * 180 / pi
+
+d_omega = 0.1
+
+omegas = []
+maxas = []
+
+for i in range(0, 20):
+	if d_omega * (i - 1) < math.sqrt(-g/L) and d_omega * i > math.sqrt(-g/L):
+		maxas.append(diff_omega(math.sqrt(-g/L)))
+		omegas.append(math.sqrt(-g/L))
+	maxas.append(diff_omega(i * d_omega + 2))
+	omegas.append(i * d_omega + 2)
+	print(i, maxas[-1])
+
+
+plt.plot(omegas, maxas)
+plt.axhline(y=0, color='k')
+plt.axvline(x=math.sqrt(-g/L), color='k', ls='--')
+plt.xlabel("omega")
+plt.ylabel("a max (deg)")
+plt.title("a0=" + str(angle) + " deg | f_max=" + str(f_max) + " | q=" + str(q))
 plt.show()
