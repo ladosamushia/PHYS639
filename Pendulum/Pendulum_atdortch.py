@@ -6,28 +6,98 @@ Created on Thu Sep 20 11:24:30 2018
 """
 
 import math
-from scipy.integrate import odeint
 import matplotlib.pyplot as plt
+import numpy as np
 
-dt = 1
-itheta = math.pi/6
+
+"Intialize Variables"
+t = np.linspace(0,math.pi)
+itheta = math.pi/4
 length = 2.0
 omega = 9.8/length
-period = 2*math.pi/omega
 
-
-def displacement (itheta,omega,dt):
+"Defined function that calculates displacement"
+def displacement (itheta,omega,t):
     
-    theta = itheta*math.cos(omega*dt)
+    theta = itheta*np.cos(omega*t)
     
     return([theta])
     
 theta = itheta
+    
+[theta] = displacement(theta,omega,t)
+
+"Plot graph"
+plt.plot(t,theta)
+plt.xlabel('Time')    
+plt.ylabel('Theta')
+
+"---------------------------------------------------------------------------"
 
 
-while theta>=0:
+
+
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+"Intialize Variables"
+t = np.linspace(0,math.pi)
+itheta = math.pi/4
+length = 2.0
+omega = 9.8/length
+b=2
+
+"Defined function that calculates displacement"
+def displacement (itheta,omega,t):
     
-    [theta] = displacement(theta,omega,dt)
-    plt.plot(theta,dt)
+    theta = itheta*np.exp((-b/2)*t)*np.cos(omega*t)
     
+    return([theta])
     
+theta = itheta
+    
+[theta] = displacement(theta,omega,t)
+
+"Plot graph"
+plt.plot(t,theta,'g')
+plt.xlabel('Time')    
+plt.ylabel('Theta')
+
+
+"------------------------------------------------------------------------"
+
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+"Intialize Variables"
+t = np.linspace(0,np.pi)
+itheta = np.pi/4
+length = 2.0
+omega = 9.8/length
+k=.01
+b=2
+z = np.sqrt(b**2-(omega-k/omega)**2)
+
+
+
+"Defined function that calculates displacement"
+def displacement (itheta,omega,t):
+    
+    theta = (itheta/z)*np.cos(omega*t)
+    
+    return([theta])
+    
+theta = itheta
+    
+[theta] = displacement(theta,omega,t)
+
+"Plot graph"
+plt.plot(t,theta,'r')
+plt.xlabel('Time')    
+plt.ylabel('Theta')
+
+
