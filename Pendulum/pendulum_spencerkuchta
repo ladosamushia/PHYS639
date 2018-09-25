@@ -1,0 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt 
+
+def pendulum(theta, omega, b, Fmax, O, t):
+    g = 9.8 #gravity
+    l = 10.0 #length of pendulum
+    return -(g/l)*np.sin(theta) - b*omega + Fmax*np.sin(O*t)
+
+def f(theta0, omega0, b, Fmax, O):
+    #initial conditions
+    theta0 = np.deg2rad(theta0)
+    theta = theta0
+    omega = omega0
+    p = 0    
+    
+    #time
+    t = 0
+    tf = 100.0
+    dt = .01
+    
+    #arrays for pendulum
+    theta_array = [theta0]
+    t_array = [t]
+
+    while (t<tf):
+        #pendulum euler's method
+        p = pendulum(theta, omega, b, Fmax, O, t)
+        omega += p*dt
+        theta += omega*dt   
+        t += dt
+    
+        theta_array.append(theta)  
+        t_array.append(t)
+        
+    return [t_array, theta_array]
+   
+t1, a1 = f(45, -.5, .5, .1, 1) 
+plt.plot(t1, a1, 'r-')
+plt.xlabel('time (s)')
+plt.ylabel('angle (rad)')
+plt.grid(True)
+
+#amax = []
+#OMEGA = np.linspace(0.0, 2.0, 100)
+#for w in OMEGA:
+#    t, a = f(45, 0, .2, 1, w)
+#    amax.append(max(a))
+
+#plt.plot(OMEGA, amax)
+#print(max(a1[-3000:]))
+
+
