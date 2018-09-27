@@ -113,7 +113,7 @@ while i < tests:
     y = [0]
     z = [0]
     while t < tf:
-        theta = random.randint(0.0,np.pi)
+        theta = random.randint(0.0,2*np.pi)
         phi = random.randint(0.0,2*np.pi)
         r = 1
         
