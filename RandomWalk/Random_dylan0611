@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-#%%
+#%% Moving all directions by 1 in each direction
 
 displacement = []
 displacement_x = []
@@ -23,6 +23,7 @@ trials = []
 trial = 0
 
 while i < tests:
+    
     t = 0
     tf = 100
     time = [0]
@@ -57,11 +58,11 @@ while i < tests:
         t = t+1
         time.append(t)
         
-    displacementx = x[tf]
+    displacementx = abs(x[tf])
     displacement_x.append(displacementx)
-    displacementy = y[tf]
+    displacementy = abs(y[tf])
     displacement_y.append(displacementy)
-    displacementz = z[tf]
+    displacementz = abs(z[tf])
     displacement_z.append(displacementz)
     displacementtot = np.sqrt((displacementx)**2 + (displacementy)**2 + (displacementz)**2)
     displacement.append(displacementtot)
@@ -72,6 +73,81 @@ while i < tests:
     
 plt.figure(1)
 plt.title("Displacement vs trials")
+plt.xlabel("Trials")
+plt.ylabel("Displacement")
+plt.plot(trials, displacement_x, "blue", label="X Displacement")
+plt.plot(trials, displacement_y, "red", label= "Y Displacement")
+plt.plot(trials, displacement_z, "green", label= "Z Displacement")
+plt.plot(trials, displacement, "cyan", label="Overall Displacement")
+
+
+
+plt.figure(2)
+fig = plt.figure(2)
+ax = fig.add_subplot(111, projection = '3d')
+ax.plot(x, y, z)
+    
+print "The displacement of the particle in the x direction is: ", displacementx
+print "The displacement of the particle in the y direction is: ", displacementy
+print "The total displacement of the particle is: ", displacementtot
+     
+
+#%% Moving in a random direction by 1
+
+displacement = []
+displacement_x = []
+displacement_y = []
+displacement_z = []
+i=0
+tests = 50
+trials = []
+trial = 0
+debug = []
+
+while i < tests:
+    
+    t = 0
+    tf = 100
+    time = [0]
+    x = [0]
+    y = [0]
+    z = [0]
+    while t < tf:
+        theta = random.randint(0.0,np.pi)
+        phi = random.randint(0.0,2*np.pi)
+        r = 1
+        
+        x_change = r*np.sin(theta)*np.cos(phi)
+        y_change = r*np.sin(theta)*np.sin(phi)
+        z_change = r*np.cos(theta)
+        
+        db = x_change**2 + y_change**2 + z_change**2
+        debug.append(db)
+        
+        x.append(x[t] + x_change)
+        y.append(y[t] + y_change)
+        z.append(z[t] + z_change)
+        
+        t = t+1
+        time.append(t)
+        
+    displacementx = abs(x[tf])
+    displacement_x.append(displacementx)
+    displacementy = abs(y[tf])
+    displacement_y.append(displacementy)
+    displacementz = abs(z[tf])
+    displacement_z.append(displacementz)
+    displacementtot = np.sqrt((displacementx)**2 + (displacementy)**2 + (displacementz)**2)
+    displacement.append(displacementtot)
+    trial +=1
+    trials.append(trial)
+    
+    i +=1
+    
+plt.figure(3)
+plt.title("Displacement vs trials")
+plt.xlabel("Trials")
+plt.ylabel("Displacement")
 plt.plot(trials, displacement_x, "blue", label="X Displacement")
 plt.plot(trials, displacement_y, "red", label= "Y Displacement")
 plt.plot(trials, displacement_z, "green", label= "Z Displacement")
@@ -79,8 +155,8 @@ plt.plot(trials, displacement, "cyan", label="Overall Displacement")
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
 
-plt.figure(2)
-fig = plt.figure(2)
+plt.figure(4)
+fig = plt.figure(4)
 ax = fig.add_subplot(111, projection = '3d')
 ax.plot(x, y, z)
     
