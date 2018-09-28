@@ -20,7 +20,7 @@ def f():
 	return q
 def g():
 	#constants
-	q = random.rayleigh(15)
+	q = random.rayleigh(12.5)
 	return q
 def drawLine(canvas, x1, y1, x2, y2):
 	# globalize variables
