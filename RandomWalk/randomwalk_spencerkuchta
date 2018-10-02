@@ -1,0 +1,81 @@
+'''
+Spencer Kuchta
+Random Walk
+'''
+
+import numpy as np
+import numpy.random as random
+import matplotlib.pyplot as plt
+
+# 1D Random Walk
+# I assigned my left and right steps as integer values -1 and 1 respectively
+# Create an array filled with left or right components randomly chosen
+# Sum components to list of average distance array and plot
+
+avg_dist = []
+#to include bias 3x more likely to go left use array [-1,-1,-1,1]
+random_numbers = [-1,1] 
+steps = 1000
+for i in range(steps):
+    move = random.choice(random_numbers, steps)
+    distance_from_origin = np.sum(move)
+    avg_dist.append(np.abs(distance_from_origin))
+    
+plt.figure()
+plt.plot(avg_dist,'.')
+plt.title('scatterplot of steps vs distance')
+plt.xlabel('steps')
+plt.ylabel('distance from origin')
+
+plt.figure()
+plt.hist(avg_dist, 100)
+plt.title('histogram of average distance')
+plt.xlabel('distance from origin')
+plt.ylabel('frequency')
+
+# 3D Random Walk
+
+dim3_avg_dist = []
+x_dist = [] #horizontal
+y_dist = [] #verticle
+z_dist = [] #depth
+direction = ["up","down","left","right","forwards","backwards"]
+dim3_steps = 1000
+
+for n in range(dim3_steps):
+    var = random.choice(direction)
+    if var == "up":
+        y = 0
+        y += 1
+        y_dist.append(y)
+    if var == "down":
+        y = 0
+        y += -1
+        y_dist.append(y)
+    if var == "right":
+        x = 0
+        x += 1
+        x_dist.append(x)
+    if var == "left":
+        x = 0
+        x += -1
+        x_dist.append(x)
+    if var == "forwards":
+        z = 0
+        z += 1
+        z_dist.append(z)
+    if var == "backwards":
+        z = 0
+        z += -1
+        z_dist.append(z)
+    #I WANT THIS TO ONLY RUN ONCE AT THE END OF LOOP
+    xfinal = np.abs(np.sum(x_dist))
+    yfinal = np.abs(np.sum(y_dist))
+    zfinal = np.abs(np.sum(z_dist))
+    dfinal = np.sqrt(xfinal**2+yfinal**2+zfinal**2)
+    dim3_avg_dist.append(dfinal)
+
+plt.figure()
+plt.plot(dim3_avg_dist, '.')
+plt.xlabel('steps')
+plt.ylabel('distance from origin 3d')
