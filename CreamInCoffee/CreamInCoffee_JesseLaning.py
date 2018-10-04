@@ -48,9 +48,7 @@ def diffuse(n_steps, dead=False, entropy=False):
 			particles[particle] = new_pos
 		
 		if entropy:
-			if dead:
-				pass
-			else:
+			if not dead:
 				h2d = np.ndarray.flatten(np.histogram2d(*zip(*particles), bins=(10, 10))[0])
 				s.append(calc_entropy(h2d, n_particles))
 		else:
@@ -62,28 +60,30 @@ def diffuse(n_steps, dead=False, entropy=False):
 			else:
 				if (i + 1) % c == 0:
 					c *= 10
-					plt.scatter(*zip(*particles), marker='.', label="steps=" + str(i + 1))
+					plt.scatter(*zip(*particles), marker='.', label="steps=" + str(i + 1), zorder=(n_steps - i)/n_steps)
 	
 	if entropy:
-		if dead:
-			pass
-		else:
+		if not dead:
 			return s
 	else:
 		if dead:
 			return count
-		else:
-			pass
 
-n_steps = 10**8
+n_steps = 10**8 # 10**8 takes forever but produces good results
 n_experiments = 50
 
 diffuse(n_steps)
 
+plt.title("particles over time")
+plt.ylabel("y")
+plt.xlabel("x")
 plt.legend(ncol=1)
 plt.axis([minx, maxx, miny, maxy])
 plt.show()
 
+plt.title("n particles in box")
+plt.ylabel("n particles")
+plt.xlabel("time")
 plt.plot(diffuse(n_steps, True))
 plt.show()
 
@@ -94,9 +94,15 @@ for i in range(n_experiments):
 		counts[j] += d[j] / n_experiments
 
 plt.plot(counts)
-
+plt.title("avg n particles in box")
+plt.ylabel("avg n particles")
+plt.xlabel("time")
+plt.show()
 
 plt.plot(diffuse(n_steps, entropy=True))
+plt.title("entropy vs time")
+plt.ylabel("entropy")
+plt.xlabel("time")
 plt.show()
 
 s_counts = np.zeros(n_steps)
@@ -106,5 +112,7 @@ for i in range(n_experiments):
 		s_counts[j] += s[j] / n_experiments
 
 plt.plot(s_counts)
-
+plt.title("avg entropy vs time")
+plt.ylabel("avg entropy")
+plt.xlabel("time")
 plt.show()
