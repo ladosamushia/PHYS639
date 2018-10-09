@@ -8,8 +8,7 @@ Created on Tue Oct  2 13:14:59 2018
 import numpy as np
 import matplotlib.pyplot as plt
 
-# NOTE: Problems 1-3 take some time to run, and Problems 4 and 5 take absurdly
-#       long to run, so I wouldn't even try them.
+# NOTE: All problems take a while to run, and Problem 5 can take a few minutes.
 
 #------------------------------------------------------------------------------
 
@@ -127,7 +126,7 @@ plt.title("Location of cream particles in coffee")
 #plt.figure(1)
 #plt.xlabel("Steps")
 #plt.ylabel("Particles remaining")
-#plt.title("Particles remaining after N steps")
+#plt.title("Particles remaining after N steps (Avg. in green)")
 #
 ## Runs through given number of trials
 #for h in range(trials):
@@ -174,14 +173,10 @@ plt.title("Location of cream particles in coffee")
 #    plt.plot(particleCount, 'ro')
 #
 ## Graph of average particle count
-#plt.figure(2)
-#plt.plot(averageParticleCount, 'ro')
-#plt.xlabel("Steps")
-#plt.ylabel("Particles remaining")
-#plt.title("Average particles remaining after N steps")
+#plt.plot(averageParticleCount, 'go')
 #
 ## Graph of distance from origin
-#plt.figure(3)
+#plt.figure(2)
 #plt.plot(positions[0], positions[1], 'ro')
 #plt.xlabel("x Position")
 #plt.ylabel("y Position")
@@ -190,8 +185,6 @@ plt.title("Location of cream particles in coffee")
 #------------------------------------------------------------------------------
 
 # Problem 4: Entropy
-# NOTE: I think my code works, but I haven't been able to optimize it well
-#       enough to run in a reasonable amount of time. Same goes for Problem 5.
 
 ## Initializes particle number, grid size, and number of steps
 #particles = 100
@@ -200,7 +193,7 @@ plt.title("Location of cream particles in coffee")
 #
 ## Array of positions ([[x position of particle i], [y position of particle i]])
 #positions = [np.zeros(particles), np.zeros(particles)]
-#entropyValues = np.zeros(particles)
+#entropyValues = np.zeros(stepLimit)
 #
 ## Returns current entropy in system
 #def entropy(positions, particles, gridSize):
@@ -213,13 +206,13 @@ plt.title("Location of cream particles in coffee")
 #    # Checks each chunk of the grid for particles
 #    for i in range(-entropyGridSize, entropyGridSize):
 #        for j in range(-entropyGridSize, entropyGridSize):
-#            # Sets which location the current amount of particles is loggd in
+#            # Sets which location the current amount of particles is logged in
 #            entropyPositionsIndex = j + entropyGridSize + ((i + entropyGridSize) * entropyGridWidth)
 #            
 #            # Sets boundaries of current chunk
-#            xMin = i
+#            xMin = i * (gridSize / entropyGridSize)
 #            xMax = xMin + chunkSize
-#            yMax = -j
+#            yMax = -j * (gridSize / entropyGridSize)
 #            yMin = yMax - chunkSize
 #            
 #            # Counts the number of particles in the chunk
@@ -228,7 +221,7 @@ plt.title("Location of cream particles in coffee")
 #                    entropyGridPositions[entropyPositionsIndex] += 1
 #    
 #    totalEntropy = 0
-#    # Calculates current entropy            
+#    # Calculates current entropy
 #    for particleNum in entropyGridPositions:
 #        P = particleNum / particles
 #        if P != 0:
@@ -253,12 +246,11 @@ plt.title("Location of cream particles in coffee")
 #        elif direction == 4 and positions[1][j] < gridSize:
 #            positions[1][j] += 1
 #            
-#        # Records current entropy in system
-#        entropyValues[j] = entropy(positions, particles, gridSize)
-#        
-#            
+#    # Records current entropy in system
+#    entropyValues[i] = entropy(positions, particles, gridSize)
+#              
 ## Graph of entropy after each step
-#plt.plot(entropyValues,  'ro')
+#plt.plot(entropyValues,  'r')
 #plt.xlabel("Steps")
 #plt.ylabel("Entropy")
 #plt.title("Entropy after N steps")
@@ -280,7 +272,7 @@ plt.title("Location of cream particles in coffee")
 #stepLimit = 10000
 #trials = 3
 #
-#averageEntropy = np.zeros(particles)
+#averageEntropy = np.zeros(stepLimit)
 #
 ## Returns current entropy in system
 #def entropy(positions, particles, gridSize):
@@ -297,9 +289,9 @@ plt.title("Location of cream particles in coffee")
 #            entropyPositionsIndex = j + entropyGridSize + ((i + entropyGridSize) * entropyGridWidth)
 #            
 #            # Sets boundaries of current chunk
-#            xMin = i
+#            xMin = i * (gridSize / entropyGridSize)
 #            xMax = xMin + chunkSize
-#            yMax = -j
+#            yMax = -j * (gridSize / entropyGridSize)
 #            yMin = yMax - chunkSize
 #            
 #            # Counts the number of particles in the chunk
@@ -338,15 +330,14 @@ plt.title("Location of cream particles in coffee")
 #            elif direction == 4 and positions[1][j] < gridSize:
 #                positions[1][j] += 1
 #                
-#            # Records current entropy in system
-#            averageEntropy[j] += entropy(positions, particles, gridSize) / trials
+#        # Records current entropy in system
+#        averageEntropy[i] += entropy(positions, particles, gridSize) / trials
 #        
-#            
 ## Graph of entropy after each step
-#plt.plot(averageEntropy, 'ro')
+#plt.plot(averageEntropy, 'r')
 #plt.xlabel("Steps")
 #plt.ylabel("Entropy")
-#plt.title("Entropy after N steps")
+#plt.title("Average Entropy after N steps")
 #
 ## Graph of distance from origin
 #plt.figure(2)
