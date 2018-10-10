@@ -1,0 +1,50 @@
+import numpy as np
+import numpy.random as random
+import matplotlib.pyplot as plt
+
+# Cream in Coffee 
+def cream(hole_inwall, particles, wall_length, num_steps):    
+    x_pos = np.zeros(particles)
+    y_pos = np.zeros(particles)
+    possible_directions = ['right','left','up','down']
+    in_box = []
+    #proccess to move particles 1 step at a time 
+    for i in range(num_steps):
+        move = random.choice(possible_directions)                
+        p_index = random.randint(particles)        
+        if move == 'right' and x_pos[p_index] < wall_length:
+            x_pos[p_index] += 1
+        if move == 'left' and x_pos[p_index] > -wall_length:
+            x_pos[p_index] -= 1
+        if move == 'up' and y_pos[p_index] < wall_length:
+            y_pos[p_index] += 1
+        if move == 'down' and y_pos[p_index] > -wall_length:
+            y_pos[p_index] -= 1
+            
+        #hole at (100, -20 through 20)
+        if hole_inwall == True:
+            if x_pos[p_index] == wall_length:
+               if -0.2*wall_length <= y_pos[p_index] <= 0.2*wall_length:
+                   #print('particle has left chat')
+                   x_pos[p_index] = None
+                   y_pos[p_index] = None
+                   particles = particles - 1
+        elif hole_inwall == False:
+            particles = particles - 0
+        in_box.append(particles)
+            
+    plt.figure()
+    plt.title('Cream in Coffee')
+    plt.xlim(-wall_length, wall_length)
+    plt.ylim(-wall_length, wall_length)
+    plt.plot(x_pos, y_pos, '.', label=str(num_steps)+ ' steps')
+    plt.legend()
+    print(str(particles)+ ' particles remain in box')
+    
+    plt.figure()
+    plt.title('particles over time')
+    plt.xlabel('steps')
+    plt.ylabel('particles')
+    plt.plot(in_box)
+    
+cream(True, 400, 100, 10**7)
