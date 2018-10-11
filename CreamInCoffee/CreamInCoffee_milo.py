@@ -7,10 +7,6 @@ from matplotlib.patches import Rectangle
 S = -SUM[ Ni * ln( Ni )]
 """
 
-
-# hole is True if there is a hole
-hole = True
-
 def Container(H):
     hole = H
 
@@ -92,24 +88,58 @@ def Container(H):
         step[a] = steps        
         aves[a] = average
         #print steps, average
-        
-    plt.plot(N_outside)    
-    plt.plot(step, aves)
-    plt.grid(True)
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+ 
+    """
+    # Make boxes
+    boxes = np.zeros(100)
+    box_side = ((2*N_grid)/10)
+    box_left = -inside + (i * box_side)
+    box_right = -inside +((i+1) * box_side)
+
+    if X >= box_left and X < right_boxes:
+    """
+
+   
+    # First plot    
+    plt.title("Number of Particles Outside The Box vs Time (loop)")
+    plt.xlabel("Time (loops)")    
+    plt.ylabel("Particles")
     
-    border = Rectangle((-N_grid,-N_grid),2*N_grid,2*N_grid,linewidth=1, edgecolor= 'black', facecolor='none', zorder=1)
+    plt.plot(N_outside, color = 'r' , linewidth = 2 , label = '# of particles every loop')    
+    plt.plot(step, aves, color = 'g' , linewidth = 2 ,  label = 'average # of particles every {} loops'.format(divi))
+    plt.legend(loc = 'upper left')    
+    plt.grid(True)
+    
+    # Second plot    
+    fig = plt.figure()    
+    plt.title("Position of Paricles after {} loops".format(N_steps))
+    plt.xlabel("horizontal")
+    plt.ylabel("vertical")    
+    ax = fig.add_subplot(111)
+
+    # Draw the box
+    border = Rectangle((-N_grid,-N_grid),2*N_grid,2*N_grid,linewidth=2, edgecolor= 'black', facecolor='none', zorder=1)
     ax.add_patch(border)
     plt.grid(True)
-    
+    # Draw the hole (its a white line on top of the box...it will change size as the top and bottom of the hole changes)
     if hole == True:    
-        plt.plot([N_grid,N_grid], [bot,top], 'w', zorder=2) 
-
-    plt.scatter(X,Y,zorder = 3)
-    
+        plt.plot([N_grid,N_grid], [bot,top], 'w', linewidth = 2, zorder=2) 
+    #Third plot is on same thing as second
+    plt.scatter(X,Y,zorder = 3 , color = 'b')
  
     print '\n(1) if the particle looks like it is on the border, it is inside of the box'
     print '(2) if the particle is inside the hole, it is considered outside the box'
     print '\nParticles inside:', N_inside[N_steps-1]
     print '\nParticles outside:', N_outside[N_steps-1]
+    
+
+prompt = (input('Is there a hole? TYPE \n  1 for yes \n  0 for no...\n\n'))
+if prompt == 1:
+    HOLE = True
+    Container(HOLE)
+elif prompt == 0:
+    HOLE = False
+    Container(HOLE)
+else:
+    print '\nINVALID'
+
