@@ -1,97 +1,84 @@
-from Tkinter import *
-from math import *
-from sys import argv
-from matplotlib import pyplot as plt
-import time
-import numpy.random as random
-import numpy
-pi = 3.14159265359
-global gui
-# initiliaze tk object
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Oct  2 13:34:55 2018
 
-def g():
-	#constants
-	q = random.rayleigh(10)
-	return q
-def brownian(canvas):
-	#initial conditions
-	#time
-	t = 0
-	dt = 0.01
-	tf = 100
-	#array of xy coordinates
-	xa = numpy.full(100, 400)
-	ya = numpy.full(100, 400)
-	#circle characteristics
-	rad = 3
-	fill = "#f80c12"
-	i = 0
-	#list of circle objects
-	clist = []
-	#boundary
-	h= 700
-	l = 50
-	canvas.create_rectangle(l,l,h,h, width=1)
-	xlist = []
-	#create all circle at initial position
-	while(i <= 99):
-		circle = canvas.create_oval(xa[i]-rad, ya[i]-rad, xa[i]+rad, ya[i]+rad, width=1, fill=fill)
-	  	canvas.after(1)
-		gui.update()
-		clist.append(circle)
-		i+=1
-	while(t < tf):
+@author: Aus
+"""
 
-		i = 0
-		#move each particle
-		while(i<=99):
-			#generate random radius and angle to displace
-			r = g()
-			a = 2*pi*random.random()
-			xlist.append(a)
-			#print a
-			#update xy coordinates
-			xa[i] += r*cos(a)
-			ya[i] += r*sin(a)
-			#keep particle inside box
-			if(xa[i] > h):
-				xa[i] = h - 5
-			if(xa[i] < l):
-				xa[i] = l + 5
-			if(ya[i] > h):
-				ya[i] = h - 5
-			if(ya[i] < l):
-				ya[i] = l + 5 
+import numpy as np
+import random as rand
+import matplotlib.pyplot as plt
+from time import time
 
-			#update circle position
-			canvas.delete(clist[i])
-			clist[i] = canvas.create_oval(xa[i]-rad, ya[i]-rad, xa[i]+rad, ya[i]+rad, width=1, fill=fill)
-	  		canvas.after(1)
-			gui.update()
-			i+=1
-		if(t > 10):
-		  	plt.hist(xlist,bins = 100)
-		  	plt.show()
-		t += dt
-	#plot
-gui = Tk()
-#root.mainloop()
+Nparticles = 400
+Ngrid = 100
+Nsteps = 10000
+itime = time()
+k = 0
+K=[]
+B=[]
+b = 0
+x = np.zeros(Nparticles)
+y = np.zeros(Nparticles)
 
-width, height = 800, 800
-x_center, y_center = 0.5*width, 0.5*height
-x_scale, y_scale = 70, 70
+# define a loop where I choose a particle in Nparticles
+for i in range(Nsteps):
+    
+    p_index = rand.randint(Nparticles)
+    
+    # Choose a random direction
+    
+    # 0 - left, 1 - right, 2 - up, 3 - down
+    for j in range(0,1):
+        gridsize = 100
+        R = 1
+        X = np.zeros(Nparticles)
+        Y = np.zeros(Nparticles)
+    for i in range(int(Nsteps[j])):
+        particleindex = rand.randint(Nparticles)
+        r = R
+        theta = np.deg2rad(rand.choice(range(0, 360)))
+        x = r*np.cos(theta)
+        y = r*np.sin(theta)
+        #this will take particles out of the box and no longer use them
+        #it will also count the number of particles in the box for each step in a list
+        #keeps particles out of the box from going back in
+        if X[particleindex] + x >= gridsize and Y[particleindex] + y >= -10 and Y[particleindex] + y <= 10:
+            X[particleindex] = None
+            Y[particleindex] = None
+            if True:
+                Nparticles -= 1
+            elif False:
+                Nparticles += 0
+        B.append(Nparticles)
+        #recoils the particle if needed so it doesn't leave the box for spaces not satisified above for the window
+        if X[particleindex] + x >= gridsize:
+            x = -x
+        elif Y[particleindex] + y >= gridsize: 
+            y = -y
+        elif X[particleindex] + x <= -gridsize:
+            x = -x
+        elif Y[particleindex] +y <= -gridsize:
+            y = -y
+        k += 1
+        K.append(k)
+        #if all the above is false the particle will move as randomly decided
+        X[particleindex] += x
+        Y[particleindex] += y
+plt.figure( 2 )
+plt.plot(B)
+plt.xlabel (" Itrration Step ")
+plt.ylabel (" Particles in Box ")
+plt.title ("Particles in the Box")
+plt.figure( 1 )
+plt.plot(X, Y, '.')
+plt.xlabel (" X position ")
+plt.ylabel (" Y position ")
+plt.title (" Browning Motion ")
+plt.xlim(-125,125)
+plt.ylim(-125,125)
+time1 = time()
+print('Time to Completion:',time1-itime)
 
-# create a canvas
-canvas = Canvas(gui, width=width, height=height, bg='white')
-canvas.pack(expand=YES, fill=BOTH)
-
-canvas.create_text(115, 25, font=("Purisa", 12), text="Diffusion")
-
-# begin recursive drawing
-brownian(canvas)
-
-q = raw_input()
-
-gui.mainloop()
-#print q
-# not sure
+    
+    
