@@ -1,0 +1,169 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Oct  2 13:25:36 2018
+
+@author: dylansmac
+"""
+
+import numpy.random as random
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as color
+from mpl_toolkits.mplot3d import Axes3D
+
+#%% Moving all directions by 1 in each direction
+
+position_x =[]
+position_y = []
+i=0
+tests = 200
+
+while i < tests:
+    
+    list = [-1,1]
+    t = 0
+    tf = 10000
+    time = [0]
+    x = [0]
+    y = [0]
+    z = [0]
+    graph = [0]
+    trials = [0]
+    trial = 0
+    while t < tf:
+        x_chance = random.choice(list)
+        y_chance = random.choice(list)
+        
+        
+        x.append(x[t] + x_chance)
+        y.append(y[t] + y_chance)
+        
+        line = np.sqrt(x[t]**2 + y[t]**2)
+        graph.append(line)
+        
+        t = t+1
+        time.append(t)
+        trial +=1
+        trials.append(trial)
+        
+    positionx = x[tf]
+    position_x.append(positionx)
+    positiony = y[tf]
+    position_y.append(positiony)
+
+    
+    i +=1
+    
+    plt.figure(1)
+    fig = plt.figure(1)
+    ax = fig.add_subplot(1,1,1)
+    ax.set_facecolor('tab:brown')
+    plt.title("Displacement vs Time")
+    plt.xlabel("Time")
+    plt.ylabel("Displacement")
+    plt.plot(time, graph, 'ivory', alpha=0.02)
+    
+    plt.figure(2)
+    plt.title("X vs Y")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.plot(position_x,position_y,'.')
+
+
+#%% Moving 1 direction by 1 at a time within a box
+
+position_x =[]
+position_y = []
+i=0
+tests = 200
+left = 0
+
+while i < tests:
+    list = [0,1,2,3]
+    t = 0
+    tf = 10000
+    time = [0]
+    x = [0]
+    y = [0]
+    z = [0]
+    graph = [0]
+    trials = [0]
+    trial = 0
+    while t < tf:
+        chance = random.choice(list)
+        
+        if chance == 0:
+            
+            if x[t] == 100:
+                if -10 < y[t] < 10:
+                    x.append(x[t] + 150)
+                    y.append(y[t] + 150)  
+                else:
+                    x.append(x[t])
+                    y.append(y[t])
+            
+            if -100 <= x[t] < 100:
+                x.append(x[t] + 1)
+                y.append(y[t])
+                
+                    
+            else:
+                y.append(y[t])
+                x.append(x[t])
+                
+        if chance == 1:
+            if 100 >= x[t] > -100:
+                x.append(x[t] - 1)
+                y.append(y[t])
+            else:
+                y.append(y[t])
+                x.append(x[t])
+        if chance == 2:
+            if -100 <= y[t] < 100:
+                y.append(y[t] + 1)
+                x.append(x[t])
+            else:
+                y.append(y[t])
+                x.append(x[t])
+        if chance == 3:
+            if 100 >= y[t] > -100:
+                y.append(y[t] - 1)
+                x.append(x[t])
+            else:
+                y.append(y[t])
+                x.append(x[t])
+                
+        line = np.sqrt(x[t]**2 + y[t]**2)
+        graph.append(line)
+        
+        t = t+1
+        time.append(t)
+        trial +=1
+        trials.append(trial)
+        
+    positionx = x[tf]
+    if x[tf] >110:
+        left += 1
+    position_x.append(positionx)
+    positiony = y[tf]
+    position_y.append(positiony)
+
+    
+    i +=1
+    
+    plt.figure(3)
+    fig = plt.figure(3)
+    ax = fig.add_subplot(1,1,1)
+    ax.set_facecolor('tab:brown')
+    plt.title("Displacement vs Time")
+    plt.xlabel("Time")
+    plt.ylabel("Displacement")
+    plt.plot(time, graph, 'ivory', alpha=0.02)
+    
+    plt.figure(4)
+    plt.title("X vs Y")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.plot(position_x,position_y,'.')
+    
