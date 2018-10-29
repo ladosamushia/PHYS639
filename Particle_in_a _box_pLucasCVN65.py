@@ -31,7 +31,7 @@ psi = np.zeros(step)
 dpsi = np.zeros(step)
 ddpsi = np.zeros(step)
 dx = L/step
-dE = 0.01
+dE = 0.001
 while energy < 400:
     dpsi = 1.0 
     ddpsi = 0.0
@@ -42,7 +42,7 @@ while energy < 400:
     if psi[998] < aboutzero and psi[999] > -aboutzero or psi[998] > aboutzero and psi[999] < -aboutzero:
         psilist.append(psi)
         Energylist.append(energy)
-        energy += energy
+        energy += (0.25)*energy
         plt.figure(1)
         plt.plot(psi)
         plt.xlabel (" Position " " L/step " )
@@ -58,10 +58,11 @@ while energy < 400:
 # For comparision of  solutions to Test Code
 def E_n(n): #to validate a simple box
     return((h_bar*n*np.pi)**2)/(2*Me*(L)**2)
-for k in range(6): # for comparison with approximate PDE solution for a 1D infinite well
+for k in range( 1, 9 ): # for comparison with approximate PDE solution for a 1D infinite well
    E_n(k) 
    E.append(E_n(k))
-print "Analytical", E , "," , " Approximation" ,  Energylist
+print "Analytical", E , ","
+print "Approximation" ,  Energylist
 plt.figure(3)
 plt.plot(E)
 plt.plot(Energylist)
