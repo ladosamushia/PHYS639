@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Nov  1 13:10:41 2018
+
+@author: zdphelps
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+#initial conditions
+hbar = 1 #hbar = 6.582e-16
+m = 1 # mass of electron
+Psi = 0.0   
+Psi1 =1.0
+Psi2 = 0.0
+V = 0.0
+L = 1.0
+n = 0 
+x = 0
+steps = 1000
+margin = 0.0000001
+Energy = 4.8 # starting energy loop right before first energy state
+Emax = 200 
+dx = L/steps
+dE = 0.01
+
+#lists
+E = []
+Energy_list = []
+Psi_list = []
+N = []
+
+#Arrays
+Psi_array = np.zeros(steps)
+Psi1_array = np.zeros(steps)
+
+def Schrodinger(Psi,E,m,V):
+    #Psi2 = np.sin(np.sqrt((2*m*E)/hbar^2)*x)
+    Psi2 = -((E-V)*Psi)*((2*m)/hbar**2)
+    return Psi2
+     
+while Energy < Emax:
+    Psi = 0.0
+    Psi1 = 1.0
+    for i in range(steps):
+        #V = (((i*(dx))-1.5)**2)/2
+        Psi = Psi + Psi1*dx
+        Psi1 = Psi1 + Psi2*dx
+        Psi2 = Schrodinger(Psi,Energy,m,V)
+        
+        Psi_array[i] = Psi
+        Psi1_array[i] = Psi1
+        
+    previous = steps - 2
+    final = steps - 1
+    if(Psi_array[previous] < margin and Psi_array[final] > -margin or Psi_array[previous] > margin and Psi_array[final] < -margin):
+        Psi_list.append(Psi)
+        Energy_list.append(Energy)
+        N.append(1)
+        Energy = Energy + (0.25)*Energy
+        plt.figure(1)
+        plt.plot(Psi_array)
+        plt.xlabel (" Position " )
+        plt.ylabel (" Psi ")
+        plt.title (" Wavefunction ")
+        plt.figure(2)
+        plt.plot((Psi_array)**2)
+        plt.xlabel (" Position ")
+        plt.ylabel (" Psi**2 ")
+        plt.title (" Probability")
+    else:
+        Energy = Energy + dE
+        
+def SchrodingerSolution(n,m,l):
+    E = ((n*np.pi*hbar)**2)/(2*m*(l**2))
+    return E
+length = len(N)
+for i in range(length):
+    En = SchrodingerSolution((i+1),m,L)
+    E.append(En)
+plt.figure(3)
+plt.plot(E, 'r-')
+plt.plot(Energy_list, 'b-')
+plt.xlabel ("Energy Level")
+plt.ylabel ("Energy Value")
