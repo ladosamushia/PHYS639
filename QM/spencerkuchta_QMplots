@@ -1,0 +1,72 @@
+# Lots of assistance from Phil
+import numpy as np
+import matplotlib.pyplot as plt
+
+h_bar = 1.0 # 6.582119514e-16 #reduced planks constant in eVs
+Me = 1.0 # 510998.9461 # mass of an electron in eV/(C^2)
+L = 1.0
+n = 0 
+x = 0
+step = 1000
+aboutzero = 0.00000001
+
+energy = 0.0
+de = 0.001
+dx = L/step
+
+psi = np.zeros(step)
+dpsi = np.zeros(step)
+ddpsi = np.zeros(step)
+
+E = []
+analytic_count = 1
+Energylist = []
+psilist = []
+
+while energy < 400:
+    dpsi = 1.0 
+    ddpsi = 0.0
+        
+    for j in range(1,step):
+        psi[j] = psi[j-1] + dpsi*dx
+        ddpsi = -2*energy*psi[j-1] 
+        dpsi += ddpsi*dx 
+        
+    if psi[998] < aboutzero and psi[999] > -aboutzero or psi[998] > aboutzero and psi[999] < -aboutzero:
+        psilist.append(psi)
+        Energylist.append(energy)
+        energy += 0.25*energy
+        analytic_count += 1
+        
+        plt.figure(1)
+        plt.plot(psi)
+        plt.xlabel (" Position " " L/step " )
+        plt.ylabel (" Psi ")
+        plt.title (" Wavefunction ")
+        
+        plt.figure(2)
+        plt.plot(psi**2)
+        plt.xlabel (" Position " " L/step ")
+        plt.ylabel (" P(x) = Psi**2 ")
+        plt.title (" Probability")
+        
+    else:
+        energy += de     
+        
+# For comparision of  solutions to Test Code
+def E_n(n): #to validate a simple box
+    return((h_bar*n*np.pi)**2)/(2*Me*(L)**2)
+    
+for k in range(1,analytic_count): # for comparison with approximate PDE solution for a 1D infinite well
+   E_n(k) 
+   E.append(E_n(k))
+   
+print("Analytical:", E)
+print("Approximation:", Energylist)
+
+plt.figure(3)
+plt.plot(E)
+plt.plot(Energylist)
+plt.xlabel ("n")
+plt.ylabel (" Energy(n) (eV) ")
+plt.title (" Energy level ")
