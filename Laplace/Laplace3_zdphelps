@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov  6 13:51:17 2018
+
+@author: zdphelps
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+grid = 100
+phi = np.zeros((grid,grid))
+phi_new = np.zeros((grid,grid))
+
+for i in range(grid):
+    for j in range(grid):
+        if i == 40 and j >=40 and j <=60:
+            phi[i][j] = 1
+        elif i >= 41 and i <= 60 and j == 50:
+            phi[i][j] = -1
+        elif i == 0 or j == 0 or i == grid-1 or j == grid-1:
+            phi[i][j] = -1
+        else:
+            phi[i][j] = 0
+
+plt.imshow(phi)
+
+Niterations = 1000
+for k in range(Niterations):
+    print(k)
+    for i in range(grid):
+        for j in range(grid):
+            if i == 40 and j >=40 and j <=60:
+                phi_new[i][j] = 1
+            elif i >= 41 and i <=60 and j == 50:
+                phi_new[i][j] = -1
+            elif i == 0 or j == 0 or i == grid-1 or j == grid-1:
+                phi_new[i][j] = 0
+            else:
+                phi_new[i][j] = (phi[i-1][j] + phi[i+1][j] + phi[i][j-1] + phi[i][j+1])/4.0
+    #plt.pause(0.001)
+    phi = np.copy(phi_new)
+    plt.clf()
+    plt.imshow(phi)
