@@ -1,0 +1,50 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+Ngrid = 100
+phi = np.zeros((Ngrid,Ngrid))
+phi_new = np.zeros((Ngrid,Ngrid))
+
+##block electric potential
+#for i in range(Ngrid):
+#    for j in range(Ngrid):
+#        if i >= 40 and i <=60 and j >=40 and j <=60:
+#            phi[i][j] = 100
+#        elif i == 0 or j == 0 or i == Ngrid-1 or j == Ngrid-1:
+#            phi[i][j] = 0
+#        else:
+#            phi[i][j] = 0
+#plt.imshow(phi)
+
+#parallel plates
+for i in range(Ngrid):
+    for j in range(Ngrid):
+        if i >= 20 and i <= 80 and j >= 40 and j <= 45:
+            phi[i][j] = 100
+        elif i >= 20 and i <= 80 and j >= 55 and j <= 60:
+            phi[i][j] = -100
+        elif i == 0 or j == 0 or i == Ngrid-1 or j == Ngrid-1:
+            phi[i][j] = 0
+        else:
+            phi[i][j] = 0
+plt.imshow(phi)       
+
+Niterations = 10
+for k in range(Niterations): 
+    print(k)
+    for i in range(Ngrid):
+        for j in range(Ngrid):
+            if i >= 20 and i <= 80 and j >= 40 and j <= 45:
+                phi[i][j] = 100
+            elif i >= 20 and i <= 80 and j >= 55 and j <= 60:
+                phi[i][j] = -100
+            elif i == 0 or j == 0 or i == Ngrid-1 or j == Ngrid-1:
+                phi_new[i][j] = 0
+            else:
+                phi_new[i][j] = (phi[i-1][j] + phi[i+1][j] + phi[i][j-1] + phi[i][j+1])/4.0
+    plt.pause(0.001)
+    phi = np.copy(phi_new)
+    #plt.clf()
+    plt.imshow(phi, vmin=-120, vmax=120)
+
+#final plots have wierd bug of removing center charge after starting the distribution process
