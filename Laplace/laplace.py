@@ -1,39 +1,61 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Nov  1 13:46:37 2018
+Created on Thu Nov  1 13:47:44 2018
 
-@author: Lado
+@author: Aus
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 
-Ngrid = 100
-phi = np.zeros((Ngrid,Ngrid))
-phi_new = np.zeros((Ngrid,Ngrid))
+ngrid = 100 
+phi = np.zeros((ngrid,ngrid))
+phi_new = np.zeros((ngrid,ngrid))
 
-for i in range(Ngrid):
-    for j in range(Ngrid):
-        if i >= 40 and i <=60 and j >=40 and j <=60:
+for i in range(ngrid):
+    for j in range(ngrid):
+        if i >= 40 and i<=60 and j >= 40 and j<=60:
             phi[i][j] = 100
-        elif i == 0 or j == 0 or i == Ngrid-1 or j == Ngrid-1:
+        elif i == 0 or j == 0 or i == ngrid-1 or j == ngrid-1:
             phi[i][j] = 0
         else:
-            phi[i][j] = 0
-
+            phi[i][j] = (2500 - ((i-50)**2+ (j-50)**2))*100/2500
+            
+            
+plt.imshow(phi)
+    
+niterations = 100
+for k in range(niterations):
+    for i in range(ngrid):
+        for j in range(ngrid):
+            if i >= 40 and i <= 60 and j >= 40 and j <=60:
+                phi_new[i][j] = 100
+            elif i == 0 or j == 0 or i == ngrid-1 or j == ngrid-1:
+                phi_new[i][j]= 0
+            else:
+                phi_new[i][j] = (phi[i-1][j] + phi[i+1][j] + phi[i][j-1] + phi[i][j+1])/4
+    phi = np.copy(phi_new)
 plt.imshow(phi)
 
-Niterations = 10000
-for k in range(Niterations):
-    print(k)
-    for i in range(Ngrid):
-        for j in range(Ngrid):
-            if i >= 40 and i <=60 and j >=40 and j <=60:
+
+#2 Parallel Capacitors 
+
+for k in range(niterations):
+    for i in range(ngrid):
+        for j in range(ngrid):
+            if i >= 40 and i <= 45 and j >= 20 and j <=80:
                 phi_new[i][j] = 100
-            elif i == 0 or j == 0 or i == Ngrid-1 or j == Ngrid-1:
-                phi_new[i][j] = 0
+            elif i >= 70 and i <= 75 and j >= 20 and j<=80:
+                phi_new[i][j]= -100
+            elif i == 0 or j == 0 or i == ngrid-1 or j == ngrid-1:
+                phi_new[i][j]= 0
             else:
-                phi_new[i][j] = (phi[i-1][j] + phi[i+1][j] + phi[i][j-1] + phi[i][j+1])/4.0
-    plt.pause(0.001)
+                phi_new[i][j] = (phi[i-1][j] + phi[i+1][j] + phi[i][j-1] + phi[i][j+1])/4
     phi = np.copy(phi_new)
-    plt.clf()
-    plt.imshow(phi)
+plt.figure(2)
+plt.imshow(phi)
+
+# Perpendicular Capacitors
+
+
+
