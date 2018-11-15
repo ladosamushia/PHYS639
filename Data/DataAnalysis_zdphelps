@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Nov 15 13:12:35 2018
+
+@author: zdphelps
+"""
+import scipy as sp
+import numpy as np
+import matplotlib.pyplot as plt
+#Data Analysis
+#D = (1/0.7)* integral(1/(sqrt(Om(1+z)^3+On))) from 0 to z
+#loop through data
+#calculate therotical data
+#find kai^2 (x^2=Sum((D-Dth)^2/sig^2))
+Data = np.loadtxt("data_set.txt")
+#print(Data)
+Z = np.array([])
+D = np.array([])
+Sig = np.array([])
+length = len(Data)
+for i in range(length):
+    Z = np.append(Z,Data[i][0])
+    D = np.append(D,Data[i][1])
+    Sig = np.append(Sig,Data[i][2])
+def Dth(z,Om,On):
+    fx = lambda x: 1/np.sprt(Om*(1+x)**3+On)
+    Dth = (1/0.7)*np.integrade.quad(fx,0,z)[0]
+    return Dth
+
+    
