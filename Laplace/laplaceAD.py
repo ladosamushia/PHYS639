@@ -57,5 +57,19 @@ plt.imshow(phi)
 
 # Perpendicular Capacitors
 
+for k in range(niterations):
+    for i in range(ngrid):
+        for j in range(ngrid):
+            if i >= 20 and i <= 25 and j >= 20 and j <=80:
+                phi_new[i][j] = 100
+            elif i >= 35 and i <= 75 and j >= 45 and j<=50:
+                phi_new[i][j]= -100
+            elif i == 0 or j == 0 or i == ngrid-1 or j == ngrid-1:
+                phi_new[i][j]= 0
+            else:
+                phi_new[i][j] = (phi[i-1][j] + phi[i+1][j] + phi[i][j-1] + phi[i][j+1])/4
+    phi = np.copy(phi_new)
+plt.figure(3)
+plt.imshow(phi)
 
 
