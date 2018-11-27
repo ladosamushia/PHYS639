@@ -73,3 +73,4 @@ plt.figure(3)
 plt.imshow(phi)
 
 
+#Turned in on time, forgot that the perpendicular capacitor problem was on a different file.
