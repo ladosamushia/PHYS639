@@ -47,15 +47,15 @@ print('ki2 =', ki2min)
 
 #Problem: Error-Bars
 
-dada=(ki2[imin, jmin + 1] + ki2[imin, jmin - 1] - 2 * ki2[imin, jmin]) / (A[jmin + 1] - A[jmin])
-dede=(ki2[imin + 1, jmin] + ki2[imin - 1, jmin] - 2 * ki2[imin, jmin]) / (E0[imin + 1] - E0[imin])
-dade=(ki2[imin - 1, jmin - 1] + ki2[imin + 1, jmin + 1] - ki2[imin - 1, jmin + 1] - ki2[imin + 1, jmin - 1]) \
+dada = (ki2[imin, jmin + 1] + ki2[imin, jmin - 1] - 2 * ki2[imin, jmin]) / (A[jmin + 1] - A[jmin]) ** 2
+dede = (ki2[imin + 1, jmin] + ki2[imin - 1, jmin] - 2 * ki2[imin, jmin]) / (E0[imin + 1] - E0[imin]) ** 2
+dade = (ki2[imin - 1, jmin - 1] + ki2[imin + 1, jmin + 1] - ki2[imin - 1, jmin + 1] - ki2[imin + 1, jmin - 1]) \
 / (4 * (A[jmin + 1] - A[jmin]) * (E0[imin + 1] - E0[imin]))
 
-Hess=np.zeros((2,2))
+Hess = np.zeros((2,2))
 Hess[0][0], Hess[0][1], Hess[1][0], Hess[1][1] = dada / 2, dade / 2, dade / 2, dede / 2
 
-C = np.linalg.inv(Hess)
+C = np.absolute(np.linalg.inv(Hess))
 sigmas = np.sqrt(C.diagonal())
 
 print('\nError:', sigmas)
