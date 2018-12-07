@@ -1,0 +1,91 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov 27 13:43:30 2018
+
+@author: dylansmac
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+E = np.array([5.000000000000000000e-01, 1.500000000000000000e+00, 2.500000000000000000e+00, 3.500000000000000000e+00, 4.500000000000000000e+00, 5.500000000000000000e+00, 6.500000000000000000e+00, 7.500000000000000000e+00, 8.500000000000000000e+00, 9.500000000000000000e+00, 1.050000000000000000e+01, 1.150000000000000000e+01, 1.250000000000000000e+01, 1.350000000000000000e+01, 1.450000000000000000e+01, 1.550000000000000000e+01, 1.650000000000000000e+01, 1.750000000000000000e+01, 1.850000000000000000e+01, 1.950000000000000000e+01])
+
+N = np.array([1.023071901302725628e+00, 1.037578212766383290e+00, 8.736136530006347600e-01, 1.112665302786128629e+00, 9.717969840095902478e-01, 1.007275797009663298e+00, 1.288049363074247999e+00, 1.193849501584538286e+00, 1.084719036720850571e+00, 9.527433132005557193e-01, 1.047375859141969512e+00, 9.320294988924426871e-01, 1.117004572139276064e+00, 1.010143140841871512e+00, 9.605064758159055360e-01, 1.023272879398691382e+00,9.198842321181268655e-01,1.102534960722813873e+00,8.828335826414679399e-01,9.246120471984263789e-01])
+
+error = np.array([9.613173305543044889e-02, 7.064680670755418834e-02,6.113372352625978667e-02,6.470524244756224730e-02,5.476875364435415672e-02,7.560845461086862507e-02,5.870999848891020334e-02,6.193312327340965567e-02,7.239841497093693623e-02,7.790352271513326099e-02,6.930370027401140665e-02,7.064480816568319277e-02,6.449015070485528134e-02,7.151563606890426472e-02,8.834617047689861946e-02,7.366374215888377153e-02,8.347503365520025920e-02,7.050911695642747556e-02,8.946578085361671373e-02,8.142393307975021033e-02])
+
+plt.figure(1)
+plt.errorbar(E,N,error,fmt='o')
+
+chi2 = np.zeros((100,100))
+
+b=1
+E0 = np.linspace(0 , 20, 100)
+A = np.linspace(0, 1, 100)
+for i in range(100):
+    for j in range(100):
+        Nth = b + A[j]*np.exp(-(E- E0[i])**2)
+        chi2[i][j] = np.sum(((N - Nth)**2)/(error)**2)
+
+plt.figure(2)
+plt.imshow(chi2)
+
+print "Min of chi2 = ", np.min(chi2)
+imin, jmin = np.where(chi2 == np.min(chi2))
+E0min = E0[imin[0]]
+Amin = A[jmin[0]]
+print 'Min of E0 is ', E0min, ' with the A value being ', Amin
+Nfin = b + Amin*np.exp(-(E-E0min)**2)
+
+plt.figure(1)
+plt.plot(E, Nfin)
+
+#%%
+
+dA = 1
+dE=1
+kmax = np.where(E == np.max(E))
+Emax = np.max(E)
+Nmax = N[kmax]
+errormax = error[kmax]
+
+
+def lnL(A,E0):
+    Nth = 1 + A*np.exp(-(Emax-E0)**2)
+    chi2 = ((Nmax-Nth)**2)/(errormax)**2
+    return -chi2/2
+    
+
+Aerror = (lnL(Amin + dA, E0min) + lnL(Amin-dA,E0min) - 2*lnL(Amin,E0min))/(dA*dE)
+Eerror = (lnL(Amin+dA,E0min+dE) + lnL(Amin-dA,E0min-dE) - lnL(Amin+dA,E0min-dE) - lnL(Amin-dA,E0min+dE))/(4*dA*dE)
+check = (lnL(Amin,E0min+dE) + lnL(Amin,E0min-dE) - 2*lnL(Amin,E0min))/(dA*dE)
+
+H = [Aerror,check],[check,Eerror]
+
+
+
+
+
+#%% Fake Data
+Afakedata=np.zeros(1000)
+Ntrue = np.ones(np.size(N))
+for k in range(1000):
+    noise = np.random.normal(0, error)
+    Nmeasured = Ntrue + noise
+    for i in range(100):
+        for j in range(100):
+            Nth = b + A[j]*np.exp(-(E- E0[i])**2)
+            chi2[i][j] = np.sum(((Nmeasured - Nth)**2)/(error)**2)
+        chi2min = np.min(chi2)
+        imin, jmin = np.where(chi2==np.min(chi2))
+        E0min = E0[imin[0]]
+        Amin = A[jmin[0]]
+        Afakedata[k]=Amin
+plt.plot(Afakedata,'.')
+
+ratio = float(np.sum(Afakedata >= .3))
+percent = ratio/1000 *100
+
+print "Chances of incorrect line of best fit is: ", percent, "%"
