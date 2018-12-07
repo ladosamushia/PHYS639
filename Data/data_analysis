@@ -1,0 +1,70 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+data = np.loadtxt("../../Desktop/DataAnalysis.txt")
+#print(Data) #check if loaded in properly
+
+size = 100
+Z = np.array([])
+D = np.array([])
+Sig = np.array([])
+length = len(data)
+Am = np.linspace(0,1,size)
+Em = np.linspace(0,10,size)
+
+for i in range(length):
+    Z = np.append(Z, data[i][0])
+    D = np.append(D, data[i][1])
+    Sig = np.append(Sig, data[i][2])
+    
+#integral functions 
+def Dth(d,z):
+    Dth = 1+d*np.exp(-(Z-z)**2)
+    return Dth
+
+def Kai2(D,Dth,Sig):
+    x2 = np.sum((D-Dth)**2/Sig**2)
+    return x2
+
+def Hessian(x,y,arr,i,j):
+    dxx = arr[i-1][j]+arr[i+1][j]-2*arr[i][j]/(x[i+1]-x[i])
+    dyy = arr[i][j-1]+arr[i][j-1]-2*arr[i][j]/(y[j+1]-y[j])
+    dxy = (arr[i+1][j+1]+arr[i-1][j-1]-arr[i+1][j-1]-arr[i-1][j-1])/4*(x[i]-x[i+1])*(y[j]-y[j+1])
+    H = np.zeros((2,2))
+    H[0][0]=-.5*dxx
+    H[1][1]=-.5*dyy
+    H[0][1]=-.5*dxy
+    H[1][0]=-.5*dxy
+    return H
+ 
+Kai2array = np.zeros((size,size))
+Kai2min = 100000
+a = 0
+b = 0
+xmin = 0
+ymin = 0
+
+for i in Am:
+    b = 0
+    for j in Em:
+        Kai2array[b][a] = Kai2(Dth(i,j),D,Sig)
+        if Kai2array[b][a]<=Kai2min:
+            xmin = b
+            ymin = a
+            Kai2min = Kai2array[b][a]
+        
+        b+=1
+    a+=1
+
+Amin = Am[ymin]
+Emin = Em[xmin]
+
+plt.figure(0)
+plt.errorbar(Z,D,Sig,fmt=".")
+plt.plot(Z,Dth(Amin,Emin))
+plt.show()
+
+H = Hessian(Em,Am,Kai2array,xmin,ymin)
+C = np.linalg.inv(H)
+sigmas = np.sqrt(C.diagonal())
+print('Hessian Error:',sigmas)
