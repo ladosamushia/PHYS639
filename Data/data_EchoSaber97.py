@@ -13,7 +13,7 @@ steps = 100
 
 data = np.loadtxt('DataAnalysis.txt')
 
-Ein= data[:,0]
+Ein = data[:,0]
 Nin = data[:,1]
 Ndel = data[:,2]
 
