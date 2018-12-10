@@ -1,0 +1,406 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
+#Final Project: Ising Model
+#Parta: Magnetization vs time at several different Temperature and Magnetic Field. 
+
+
+# In[20]:
+
+
+
+from __future__ import division
+import numpy as np
+import numpy.random as random
+import matplotlib.pyplot as plt
+get_ipython().run_line_magic('matplotlib', 'inline')
+Ngrid=10   # grid size
+#Define a function to plot Magnetization vs time at different Temp and field
+def MagTH(T,H):
+#  Monte carlo sweep
+    def flip(moment, Temp):      
+        for i in range(Ngrid):
+            for j in range(Ngrid):
+                    a = random.randint(0, Ngrid)
+                    b = random.randint(0, Ngrid)
+                    s =  moment[a, b]
+                    # We have introduced periodicity at side and corner of grid.
+                    Snb = moment[(a+Ngrid+1)%Ngrid,b] + moment[a,(b+Ngrid+1)%Ngrid] + moment[(a+Ngrid-1)%Ngrid,b] + moment[a,(b+Ngrid-1)%Ngrid]
+                    Eflip = 2*s*Snb + 2*s*H    # J=1
+                    # Possible flip Condition
+                    if Eflip < 0:
+                        s *= -1
+                    elif random.rand() < np.exp(-Eflip*Temp):
+                        s *= -1
+                    moment[a, b] = s
+        return moment
+
+#  Magnetization of  a configuration
+    def calcM(moment):
+        mag = np.sum(moment)
+        return mag
+
+#  Calculation Magnetization as a function of time
+    n   = 1000
+    Magnetization = np.zeros(n)
+    Time = np.zeros(n)    
+
+    def inistate(Ngrid):                                    #  random spin configuration in 2*2 array
+        state = 2*random.randint(2, size=(Ngrid,Ngrid))-1   # intoduce either spin -1 or +1
+        return state
+
+#  First equilibrate the system
+    NcSteps = 1000
+    moment = inistate(Ngrid)
+    for i in range(NcSteps):
+        flip(moment, 1.0/T)
+
+#  Main calculations 
+    NSteps = 1000
+    for k in range(NSteps):
+        flip(moment, 1.0/T)           # monte carlo sweep
+        Mag = calcM(moment)           # calculate the magnetization
+        Magnetization[k] = Mag/(Ngrid*Ngrid)      
+        Time[k] = k
+
+# Plot Magnetization vs time
+    plt.plot(Time, Magnetization, label='10*10 lattice')
+    plt.xlabel("Time", fontsize=12);
+    plt.ylabel("Magnetization", fontsize=12);
+    plt.title('Ising Model Monte Carlo')
+    plt.legend()
+    plt.ylim(-1.1,1.1)
+    
+
+
+# In[21]:
+
+
+
+MagTH(1.5,0)
+plt.figure(2)
+MagTH(2,0)
+plt.figure(3)
+MagTH(2.25,0)
+plt.figure(4)
+MagTH(4,0)
+
+
+# In[25]:
+
+
+MagTH(1.5,1)
+plt.figure(2)
+MagTH(3,1)
+plt.figure(3)
+MagTH(4.5,1)
+plt.figure(4)
+MagTH(15,1)
+
+
+# In[24]:
+
+
+MagTH(2,2)
+plt.figure(2)
+MagTH(4,2)
+plt.figure(3)
+MagTH(6.5,2)
+plt.figure(4)
+MagTH(35,2)
+
+
+# In[ ]:
+
+
+# Conclusion:
+
+# At lowest temp, Magnetization stays close to saturation value(Ferromagnetic phase) corresponding to all of spins being parallel.
+# If we increase temp, average value of M decreases since Boltzmann factor at this temp favors a spin flip to higher energy state.
+# Around some temp,fluctuation is large(second order phase transition). This is called critical temperature. As we increase temp,
+# now fluctuation decreases in magnitude and remains around M=0 indicating paramagnetic phase.
+
+
+
+
+
+
+
+======================================================================================================================================
+
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
+#FinalProject:Ising Model 
+#Partb: Energy,Magnetization,Specific Heat,Susceptibility as a function of Temperature at different Magnetic Field
+
+
+# In[1]:
+
+
+
+from __future__ import division
+import numpy as np
+import numpy.random as random
+import matplotlib.pyplot as plt
+get_ipython().run_line_magic('matplotlib', 'inline')
+# Define a function to plot physical quantity wrt Temperature at different External field
+def plotMT(H):
+#  Monte carlo sweep
+    def flip(moment, temp):
+        for i in range(Ngrid):
+            for j in range(Ngrid):
+                    a = random.randint(0, Ngrid)
+                    b = random.randint(0, Ngrid)
+                    s =  moment[a, b]
+                    # We have introduced the periodicity for side and corner of grid
+                    Snb = moment[(a+Ngrid+1)%Ngrid,b] + moment[a,(b+Ngrid+1)%Ngrid] + moment[(a+Ngrid-1)%Ngrid,b] + moment[a,(b+Ngrid-1)%Ngrid]
+                    Eflip = 2*s*Snb + 2*H *s  # J=1
+                    # possible flip condition
+                    if Eflip < 0:
+                        s *= -1
+                    elif random.rand() < np.exp(-Eflip*temp):
+                        s *= -1
+                    moment[a, b] = s
+        return moment
+
+#  Magnetization of a configuration
+    def calcM(moment):
+        mag = np.sum(moment)
+        return mag
+
+
+#  Energy of a configuration
+    def calcE(moment):
+        energy = 0
+        for i in range(len(moment)):
+            for j in range(len(moment)):
+                S = moment[i,j]
+                Snb = moment[(i+Ngrid+1)%Ngrid, j] + moment[i,(j+Ngrid+1)%Ngrid] + moment[(i+Ngrid-1)%Ngrid, j] + moment[i,(j+Ngrid-1)%Ngrid]
+                energy += -Snb*S - H*np.sum(moment)   # consider J=1
+        return energy/4.
+
+#  Calculation of Energy,Magnetization,Specific Heat,Susceptibility as a function of Temperature
+    n    = 128                        
+    Ngrid    = 8                     # Grid Size
+
+    Energy = np.zeros(n)
+    Magnetization = np.zeros(n)
+    SpecificHeat = np.zeros(n)
+    Susceptibility = np.zeros(n)
+
+    T = np.linspace(1, 10, n)          # Temperature range
+    for k in range(len(T)):
+        E1 = M1 = E2 = M2 = 0
+        def inistate(N):              #  random spin configuration in 2*2 array
+            state = 2*random.randint(2, size=(Ngrid,Ngrid))-1    # introduce spin either -1 or +1
+            return state
+        
+#   First equilibrate the system
+        NcSteps = 500                    
+        moment = inistate(Ngrid)
+        for i in range(NcSteps):
+            flip(moment, 1/T[k])
+
+#   Main calculations 
+        NSteps = 500                       # steps for which we calculate energy and magnetization
+        for i in range(NSteps):
+            flip(moment, 1/T[k])           # monte carlo sweep
+            Mag = calcM(moment)            # calculate the magnetisation
+            Ene=calcE(moment)              # calculate the energy
+            E1 = E1 + Ene
+            M1 = M1 + Mag
+            M2 = M2   + Mag*Mag
+            E2 = E2   + Ene*Ene
+            
+        Energy[k]         = E1/(NSteps*Ngrid*Ngrid)
+        Magnetization[k]  = M1/(NSteps*Ngrid*Ngrid)
+        Susceptibility[k] = ((M2/NSteps) - M1*M1/(NSteps*NSteps) )/(Ngrid*Ngrid*T[k])
+        SpecificHeat[k]   = ((E2/NSteps) - E1*E1/(NSteps*NSteps) )/(Ngrid*Ngrid*T[k]*T[k])
+
+# Plot E vs T, M vs T, SH vs T, Sus vs T
+
+    plt.figure(5);
+    plt.plot(T, Energy, 'o', color="red",label='8*8 lattice');
+    plt.xlabel("Temperature (T)", fontsize=12);
+    plt.ylabel("Energy per spin", fontsize=12);
+    plt.title('Ising Model Monte Carlo')
+    plt.legend()
+
+    plt.figure(6);
+    plt.plot(T, abs(Magnetization), 'o',color="blue",label='8*8 lattice');
+    plt.xlabel("Temperature (T)", fontsize=12);
+    plt.ylabel("Magnetization ", fontsize=12);
+    plt.title('Ising Model Monte Carlo')
+    plt.legend()
+
+    plt.figure(7);
+    plt.plot(T, SpecificHeat, 'o', color="black",label='8*8 lattice');
+    plt.xlabel("Temperature (T)", fontsize=12);
+    plt.ylabel("Specific Heat per Spin ", fontsize=12);
+    plt.title('Ising Model Monte Carlo')
+    plt.legend()
+
+    plt.figure(8);
+    plt.plot(T, Susceptibility, 'o', color="green",label='8*8 lattice');
+    plt.xlabel("Temperature (T)", fontsize=12);
+    plt.ylabel("Susceptibility", fontsize=12);
+    plt.title('Ising Model Monte Carlo')
+    plt.legend()
+
+
+# In[2]:
+
+
+plotMT(0)
+
+
+# In[3]:
+
+
+plotMT(1)
+
+
+# In[4]:
+
+
+plotMT(2)
+
+
+# In[ ]:
+
+
+# Conclusion:
+# we determined energy per spin, Magnetization, Specific Heat and Susceptibilty. From Specific Heat and Susceptibilty,
+# we define critical temperature at which they diverge. We found that crtitical temperature increases as external field increases.
+
+
+
+
+
+
+
+
+======================================================================================================================================
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
+#FinalProject:Ising Model 
+#Partc: Magnetization as a function Magnetic Field at different temperature
+
+
+# In[11]:
+
+
+
+from __future__ import division
+import numpy as np
+import numpy.random as random
+import matplotlib.pyplot as plt
+get_ipython().run_line_magic('matplotlib', 'inline')
+#Define a function to plot Magnetization as a function of Field at different temperature
+def plotMH(T):
+#  Monte carlo sweep
+    def flip(moment, H):
+        for i in range(Ngrid):
+            for j in range(Ngrid):
+                    a = random.randint(0, Ngrid)
+                    b = random.randint(0, Ngrid)
+                    s =  moment[a, b]
+                    # We have introduced periodicity at side and corner of grid
+                    Snb = moment[(a+Ngrid+1)%Ngrid,b] + moment[a,(b+Ngrid+1)%Ngrid] + moment[(a+Ngrid-1)%Ngrid,b] + moment[a,(b+Ngrid-1)%Ngrid]
+                    Eflip = 2*s*Snb + 2*H *s   # J=1
+                    # Possible Flip Condition
+                    if Eflip < 0:
+                        s *= -1
+                    elif random.rand() < np.exp(-Eflip/T):
+                        s *= -1
+                    moment[a, b] = s
+        return moment
+
+#  Magnetization of a configuration
+    def calcM(moment):
+        mag = np.sum(moment)
+        return mag
+
+#  Calculation of Magnetization vs Field
+    n    = 100
+    Ngrid     = 10                    # grid size
+    Magnetization = np.zeros(n)
+    H = np.linspace(-5, 5, n)         # External field
+    for k in range(len(H)):
+        E1 = M1 = E2 = M2 = 0
+        def inistate(N):              # random spin configuration in 2*2 array
+            state = 2*random.randint(2, size=(Ngrid,Ngrid))-1  # introduce spin either -1 or +1
+            return state
+        
+#  First equilibrate the system
+        NcSteps = 500               
+        moment = inistate(Ngrid)
+        for i in range(NcSteps):
+            flip(moment, H[k])
+
+#   Main calculations 
+        NSteps = 500
+        for i in range(NSteps):
+            flip(moment, H[k])           # monte carlo sweep
+            Mag = calcM(moment)          # calculate the magnetisation
+            M1 = M1 + Mag
+            Magnetization[k]  = M1/(NSteps*Ngrid*Ngrid)
+
+#  Plot M vs H
+    plt.plot(H, Magnetization, 'o');
+    plt.xlabel("External Field (H)", fontsize=12);
+    plt.ylabel("Magnetization ", fontsize=12);
+    plt.title('Ising Model Monte Carlo')
+
+
+# In[12]:
+
+
+plotMH(1)
+
+
+# In[13]:
+
+
+plotMH(2)
+
+
+# In[14]:
+
+
+plotMH(3)
+
+
+# In[15]:
+
+
+plotMH(5)
+
+
+# In[16]:
+
+
+# Conclusion:
+# It can be concluded that temp below Tc(cricitical temp)i.e.1K and 2K, there is spontaneous magnetization, field serves only
+# to determine the direction of M. So, M changes sign abruptly when H is increased through zero. This is first order transition.
+
+# But at temp above Tc i.e. at 3K and 5K,there is no spontaneous magnetization. So, there is no discontinuity in M. System 
+# goes smoothly from the state with negative magnetization at H<0 to the state with positive magnetization at H>0.
+
+
+# In[ ]:
+
+
+
+
