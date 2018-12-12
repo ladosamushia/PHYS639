@@ -28,7 +28,7 @@ for i in range(nsteps - 1):
 E, psit = np.linalg.eigh(A)
 psi = np.transpose(psit)
 
-for i in range(5):
+for i in range(1,10):
     plt.plot(psi[i], label=str(E[i]))
 plt.show()
 
