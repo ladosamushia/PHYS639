@@ -30,4 +30,6 @@ print Energy(dM) #Kinetic Energy Released in MeV
 #masses of the products. It is easiest to do this with a data set that is imported.
 #A positive energy shows that the reaction is exothermic releasing energy
 #while a negative energy shows that the reaction is endothermic requiring energy
-#for it to be carried out.
+#for it to be carried out. Sometimes there are more than 2 products formed
+#especially in fission/decay reactions with heavy isotopes like uranium 235-238
+#and plutonium 239.
