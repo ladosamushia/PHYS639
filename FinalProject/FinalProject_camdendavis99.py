@@ -295,3 +295,14 @@ class FinalProject_camdendavis99:
 Run = FinalProject_camdendavis99()
 Run.main()
 
+
+"""
+Final Notes:
+    The deviation from the normal curve depending on the number of balls seems
+    to drop off sharply, converging to almost zero deviation at only ~20 balls.
+    The deviation depending on number of slots however, follows a much more
+    interesting pattern. It would seem that the devation bottoms out at ~20
+    slots, slightly rises, then decreases slightly again to converge to ~0.006.
+    I anticipated both of the graphs to look somewhat identical, so I was
+    surprised to see the interesting behavior of the last graph.
+"""
