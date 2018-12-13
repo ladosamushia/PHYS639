@@ -1,0 +1,26 @@
+# i finished the project fairly early
+# spent a long time with Jesse after to condense to as few lines as possible
+# kinda unnecessary but it was fun
+
+import numpy as np
+import numpy.random as rand
+import matplotlib.pyplot as plt
+
+trials = 100000
+results = np.zeros(12)
+Ns = np.sum(rand.choice(range(1, 7), (2, trials)), axis=0)
+Ms = np.array([np.sum(rand.choice([0, 1], i)) for i in Ns])
+
+for i in range(trials):
+    if(Ms[i] == 5): # M value to determine probabilities based on
+        results[Ns[i]-1] += 1
+
+# normalize results
+results /= np.sum(results)
+
+# plot
+plt.bar(range(1, 13), results)
+plt.ylim(0, 1)
+plt.xlim(0, 13)
+plt.ylabel("Probability of")
+plt.xlabel("N")
